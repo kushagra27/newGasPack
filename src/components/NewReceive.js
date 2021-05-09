@@ -3,7 +3,7 @@ import { Container, Row, Col } from "react-bootstrap";
 import {withRouter} from 'react-router-dom';
 import Sidebar from "./Sidebar";
 
-const Dashboard = () => {
+const NewReceive = () => {
   return (
     <>
       <Container fluid>
@@ -12,7 +12,7 @@ const Dashboard = () => {
             <Sidebar />
           </Col>
           <Col lg={10} id="page-content-wrapper">
-            Gas deatils
+            New Receive
           </Col>
         </Row>
       </Container>
@@ -20,4 +20,4 @@ const Dashboard = () => {
   );
 };
 
-export default withRouter(Dashboard);
+export default withRouter(NewReceive);
