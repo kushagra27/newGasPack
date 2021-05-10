@@ -13,12 +13,15 @@ const Sidebar = () => {
         <Nav.Item>
           <Link to="/newParty">New Party</Link>
         </Nav.Item>
+        <hr/>
         <Nav.Item>
           <Link to="/newDispatch">New Dispatch</Link>
         </Nav.Item>
+        <hr/>
         <Nav.Item>
           <Link to="/newReceive">New Receive</Link>
         </Nav.Item>
+        <hr/>
       </Nav>
     </>
   );

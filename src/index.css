@@ -1,3 +1,11 @@
+html,
+body {
+  padding: 0;
+  font-family: "Montserrat", sans-serif;
+  margin: 0;
+  overflow-x: hidden;
+}
+
 .sidebar {
   min-height: 100vh !important;
   z-index: 100;
@@ -6,9 +14,19 @@
   border-radius: 0rem 0 4rem 0rem;
 }
 .sidebar a {
-  color: #80ffdb ;
+  color: #80ffdb;
   font-weight: 400;
   text-decoration: none;
+}
+hr {
+  border: 0;
+  border-top: 3px solid rgba(202, 202, 202, 0.1);
+}
+.nav-item {
+  padding: 0rem 1rem;
+}
+.nav-item a:hover{
+  color: white;
 }
 .nav {
   display: block;
@@ -25,4 +43,30 @@
 #page-content-wrapper {
   min-width: 0;
   width: 100%;
+}
+.form {
+  padding: 1rem;
+}
+.card {
+  padding: 1rem;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+.button {
+  background-color: #80ffdb;
+  color: #252525;
+  opacity: 0.9;
+  padding: 0.5rem 2rem;
+  border-radius: 1rem;
+  border: #80ffdb solid 2px;
+}
+.form-control {
+  border-radius: 0.5rem;
+}
+.button:hover {
+  background-color: #80ffdb;
+  color: #252525;
+  border: #80ffdb solid 2px;
+  opacity: 1;
+  border-radius: none;
+  font-weight: bold;
 }

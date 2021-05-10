@@ -1,20 +1,22 @@
 import React from "react";
 import { Container, Row, Col, Form, Button, Table } from "react-bootstrap";
-import {withRouter} from 'react-router-dom';
-import useForm from './CustomHooks'
+import { withRouter } from "react-router-dom";
+import useForm from "./CustomHooks";
 import Sidebar from "./Sidebar";
-import db from './Firestore'
+import db from "./Firestore";
 
 const NewDispatch = () => {
-    const submit = ()=>{
-        db.collection('parties').doc(`${inputs['partyName']}`).set(inputs).then(()=>{
-            console.log("Document successfully written!");
-        })
-        console.log(inputs)
-    }
+  const submit = () => {
+    db.collection("parties")
+      .doc(`${inputs["partyName"]}`)
+      .set(inputs)
+      .then(() => {
+        console.log("Document successfully written!");
+      });
+    console.log(inputs);
+  };
 
-
-    const {inputs, handleInputChange, handleSubmit} = useForm(submit);
+  const { inputs, handleInputChange, handleSubmit } = useForm(submit);
 
   return (
     <>
@@ -26,44 +28,58 @@ const NewDispatch = () => {
           <Col lg={10} id="page-content-wrapper">
             <Row>
               <Form onSubmit={handleSubmit}>
-                  <Form.Group controlId="formBasicName">
-                      <Form.Label>Party Name</Form.Label>
-                      <Form.Control 
-                          type="text" 
-                          placeholder="Enter Name" 
-                          value={inputs['partyName']} 
-                          name="partyName" 
-                          onChange={handleInputChange} 
-                          required 
-                          list="browsers"
-                      />
-                      <Form.Text className="text-muted" >
-                          Name of the party
-                      </Form.Text>
-                      <datalist id="browsers">
-                          <option value="Edge" />
-                          <option value="Firefox" />
-                          <option value="Chrome" />
-                          <option value="Opera" />
-                          <option value="Safari" />
-                      </datalist>
+                <div className="d-flex justify-content-center align-items-center">
+                  <Form.Group controlId="formBasicName" className="p-4">
+                    <Form.Label class="font-weight-bold">Party Name</Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Enter Name"
+                      value={inputs["partyName"]}
+                      name="partyName"
+                      onChange={handleInputChange}
+                      required
+                      list="browsers"
+                    />
+                    <Form.Text className="text-muted">
+                      Name of the party
+                    </Form.Text>
+                    <datalist id="browsers">
+                      <option value="Edge" />
+                      <option value="Firefox" />
+                      <option value="Chrome" />
+                      <option value="Opera" />
+                      <option value="Safari" />
+                    </datalist>
                   </Form.Group>
 
-                  <Form.Group controlId="formBasicPerson">
-                      <Form.Label>Contact Person</Form.Label>
-                      <Form.Control type="text" placeholder="Enter Name" value={inputs['contactPerson']} name="contactPerson" onChange={handleInputChange} required />
-                      <Form.Text className="text-muted">
-                          Name of the person in contact
-                      </Form.Text>
+                  <Form.Group controlId="formBasicPerson" className="p-4">
+                    <Form.Label class="font-weight-bold">Contact Person</Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Enter Name"
+                      value={inputs["contactPerson"]}
+                      name="contactPerson"
+                      onChange={handleInputChange}
+                      required
+                    />
+                    <Form.Text className="text-muted">
+                      Name of the person in contact
+                    </Form.Text>
                   </Form.Group>
-
-                  <Button type='submit' variant="primary">
-                      Submit
+                  <Button type="submit" className="button"> 
+                    Submit
                   </Button>
-                </Form>
+                </div>
+              </Form>
             </Row>
             <Row>
-              <Table striped bordered hover>
+              <Table
+                striped
+                bordered
+                hover
+                variant="dark"
+                style={{ margin: "1.3rem" }}
+              >
                 <thead>
                   <tr>
                     <th>#</th>
