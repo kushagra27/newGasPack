@@ -33,7 +33,7 @@ const NewParty = () => {
                             Name of the Party
                         </Form.Text>
                     </Form.Group>
-
+ 
                     <Form.Group controlId="formBasicPerson">
                         <Form.Label>Contact Person</Form.Label>
                         <Form.Control type="text" placeholder="Enter Name" value={inputs['contactPerson']} name="contactPerson" onChange={handleInputChange} required />
