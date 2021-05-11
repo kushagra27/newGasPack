@@ -1,5 +1,5 @@
-import React from "react";
-import { Container, Row, Col, Form, Button, Table } from "react-bootstrap";
+import React,{useState, useEffect, useRef} from "react";
+import { Container, Row, Col, Form, Button, Table, InputGroup, FormControl, Dropdown, DropdownButton } from "react-bootstrap";
 import { withRouter } from "react-router-dom";
 import useForm from "./CustomHooks";
 import Sidebar from "./Sidebar";
@@ -7,16 +7,58 @@ import db from "./Firestore";
 
 const NewDispatch = () => {
   const submit = () => {
-    db.collection("parties")
-      .doc(`${inputs["partyName"]}`)
-      .set(inputs)
-      .then(() => {
-        console.log("Document successfully written!");
-      });
+    // db.collection("parties")
+    //   .doc(`${inputs["partyName"]}`)
+    //   .set(inputs)
+    //   .then(() => {
+    //     console.log("Document successfully written!");
+    //   });
     console.log(inputs);
   };
 
-  const { inputs, handleInputChange, handleSubmit } = useForm(submit);
+  const [gasCount, setGasCount] = useState(1)
+  const { inputs, handleInputChange, handleSubmit, handleSelect } = useForm(submit);
+  const comp = <>
+  <Form.Group controlId="formBasicPerson" className="p-4">
+    
+  </Form.Group>
+
+  <Form.Group controlId="exampleForm.ControlSelect1">
+    <Form.Label class="font-weight-bold">Gas Quantity - {gasCount}</Form.Label>
+    <InputGroup>
+      <Form.Control
+        type="text"
+        placeholder="Enter Name"
+        value={inputs["qty" + gasCount]}
+        name={"qty" + gasCount}
+        onChange={handleInputChange}
+        required
+      />
+      <InputGroup.Append>
+        <Form.Control name={"gas" + gasCount} value={inputs['gas' + gasCount]} onChange={handleInputChange} as="select" style={{borderRadius:"0"}}>
+          <option value="">Select</option>
+          <option value="O2">O2</option>
+          <option value="CO2">CO2</option>
+          <option value="N2">N2</option>
+          <option value="H2">H2</option>
+          <option value="DA">DA</option>
+        </Form.Control>
+      </InputGroup.Append>
+    </InputGroup>
+    <Form.Text className="text-muted">
+        Number and type of gas
+      </Form.Text>
+  </Form.Group>
+</>
+  const [components, setComponents] = useState([])
+
+  useEffect(()=>{
+    setComponents( components => [ ...components, comp] )
+  },[gasCount])
+
+  const handleAddGas = () => {
+    setGasCount(gasCount + 1)
+  }
 
   return (
     <>
@@ -53,19 +95,26 @@ const NewDispatch = () => {
                   </Form.Group>
 
                   <Form.Group controlId="formBasicPerson" className="p-4">
-                    <Form.Label class="font-weight-bold">Contact Person</Form.Label>
+                    <Form.Label class="font-weight-bold">Challan Number</Form.Label>
                     <Form.Control
                       type="text"
                       placeholder="Enter Name"
-                      value={inputs["contactPerson"]}
-                      name="contactPerson"
+                      value={inputs["challanNumber"]}
+                      name="challanNumber"
                       onChange={handleInputChange}
                       required
                     />
                     <Form.Text className="text-muted">
-                      Name of the person in contact
+                      Number of Challan
                     </Form.Text>
                   </Form.Group>
+
+                  {components}
+
+                  <Button onClick={handleAddGas} className="button"> 
+                    Add Another Gas
+                  </Button>
+
                   <Button type="submit" className="button"> 
                     Submit
                   </Button>
