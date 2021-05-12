@@ -6,7 +6,7 @@ const Sidebar = () => {
   return (
     <>
       <Nav
-        className="bg-dark sidebar"
+        className="bg-dark sidebar "
         activeKey="/home"
       >
         <div className="sidebar-sticky"></div>

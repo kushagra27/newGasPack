@@ -3,6 +3,7 @@ import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
 import Sidebar from "./Sidebar";
 import useForm from "./CustomHooks";
 import db from "./Firestore";
+import NavbarLg from "./NavbarLg";
 
 const NewParty = () => {
   const submit = () => {
@@ -19,9 +20,10 @@ const NewParty = () => {
 
   return (
     <>
+    <div className="d-lg-none"><NavbarLg/></div>
       <Container fluid>
         <Row>
-          <Col lg={2} id="sidebar-wrapper">
+          <Col lg={2} id="sidebar-wrapper" className="d-xs-none d-sm-none d-xl-block d-md-block">
             <Sidebar />
           </Col>
           <Col
