@@ -25,7 +25,7 @@ hr {
 .nav-item {
   padding: 0rem 1rem;
 }
-.nav-item a:hover{
+.nav-item a:hover {
   color: white;
 }
 .nav {
@@ -70,38 +70,58 @@ hr {
   border-radius: none;
   font-weight: bold;
 }
-.image{
+.image {
   width: 80%;
   border-radius: 100%;
   z-index: 100;
 }
-.overlap{
+.overlap {
   width: 50%;
   border-radius: 100%;
   top: 0.1rem;
   right: -2.5rem;
   position: absolute;
 }
-.googlebtn{
-  border-right: solid #4285F4 2px;
+.googlebtn {
+  border-right: solid #4285f4 2px;
   background-color: #ffffff;
-  border-left: solid #DB4437 2px;
+  border-left: solid #db4437 2px;
   border-radius: 1rem;
-  border-bottom: solid #F4B400 2px;
+  border-bottom: solid #f4b400 2px;
   opacity: 1;
   font-weight: bold;
-  border-top: solid #0F9D58 2px;
-  padding:0.5rem 2.5rem;
+  border-top: solid #0f9d58 2px;
+  padding: 0.5rem 2.5rem;
 }
-.cardLogin{
+.cardLogin {
   font-weight: 700;
   max-width: 30rem;
-  background: linear-gradient(rgba(255,255,255,.5), rgba(255,255,255,.5)), url("./bg.png");
+  background: linear-gradient(
+      rgba(255, 255, 255, 0.5),
+      rgba(255, 255, 255, 0.5)
+    ),
+    url("./bg.png");
   background-size: cover;
   color: black;
 }
-.google-icon-svg{
+.google-icon-svg {
   width: 1.5rem;
   height: 1.5rem;
   user-select: none;
+}
+.btn:focus {
+  outline: none !important;
+  box-shadow: none;
+  background-color: #80ffdb;
+}
+.form-control:focus {
+  color: #252525;
+  outline: none !important;
+  box-shadow: none;
+  border: solid #80ffdb 1px;
+}
+.form-control:hover {
+  outline: none !important;
+  box-shadow: none;
+  border: solid #80ffdb 1px;
 }

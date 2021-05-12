@@ -19,7 +19,7 @@ const NewDispatch = () => {
   const [gasCount, setGasCount] = useState(1)
   const { inputs, handleInputChange, handleSubmit, handleSelect } = useForm(submit);
   const comp = <>
-  <Form.Group controlId="formBasicPerson" className="p-4">
+  <Form.Group controlId="formBasicPerson">
     
   </Form.Group>
 
@@ -68,10 +68,10 @@ const NewDispatch = () => {
             <Sidebar />
           </Col>
           <Col lg={10} id="page-content-wrapper">
-            <Row>
-              <Form onSubmit={handleSubmit}>
-                <div className="d-flex justify-content-center align-items-center">
-                  <Form.Group controlId="formBasicName" className="p-4">
+            <Row className="d-flex justify-content-center">
+              <Form onSubmit={handleSubmit} className="mt-2 mb-2 ">
+                <div className="card">
+                  <Form.Group controlId="formBasicName" >
                     <Form.Label class="font-weight-bold">Party Name</Form.Label>
                     <Form.Control
                       type="text"
@@ -94,7 +94,7 @@ const NewDispatch = () => {
                     </datalist>
                   </Form.Group>
 
-                  <Form.Group controlId="formBasicPerson" className="p-4">
+                  <Form.Group controlId="formBasicPerson" >
                     <Form.Label class="font-weight-bold">Challan Number</Form.Label>
                     <Form.Control
                       type="text"
@@ -111,7 +111,7 @@ const NewDispatch = () => {
 
                   {components}
 
-                  <Button onClick={handleAddGas} className="button"> 
+                  <Button onClick={handleAddGas} className="button mb-3"> 
                     Add Another Gas
                   </Button>
 
