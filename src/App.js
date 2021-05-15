@@ -2,6 +2,7 @@ import Dashboard from "./components/Dashboard";
 import NewParty from "./components/NewParty";
 import NewDispatch from "./components/NewDispatch";
 import NewReceive from "./components/NewReceive";
+import DailyStock from "./components/DailyStock";
 
 import {
   BrowserRouter as Router,
@@ -12,6 +13,13 @@ import {
 
 
 function App() {
+  const gas=[
+    {gas: 'O2'}, 
+    {gas: 'CO2'}, 
+    {gas: 'N2'}, 
+    {gas: 'DA'}, 
+    {gas: 'N20'}
+  ]
   return (
     <div className="App">
       <Router>
@@ -19,6 +27,7 @@ function App() {
         <Route exact path='/newParty' component={NewParty} />
         <Route exact path='/newDispatch' component={NewDispatch} />
         <Route exact path='/newReceive' component={NewReceive} />
+        <Route exact path='/dailyStock' component={()=><DailyStock gas={gas} />} />
         {/* <Route exact path='/contact' component={Contact} /> */}
       </Router>    
     </div>

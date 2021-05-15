@@ -1,7 +1,7 @@
 html,
 body {
   padding: 0;
-  font-family: "Montserrat", sans-serif;
+  /* font-family: "Montserrat", sans-serif; */
   margin: 0;
   overflow-x: hidden;
 }
@@ -137,4 +137,12 @@ hr {
   outline: none !important;
   box-shadow: none;
   border: solid #80ffdb 1px;
+}
+td, th, table{
+  border-style: solid;
+  border-width: 1px; 
+  padding:0
+}
+th{
+  padding: 0.5rem;
 }

@@ -21,6 +21,10 @@ const Sidebar = () => {
         <Nav.Item>
           <Link to="/newReceive">New Receive</Link>
         </Nav.Item>
+        <hr />
+        <Nav.Item>
+          <Link to="/dailyStock">Daily Stock</Link>
+        </Nav.Item>
         <hr/>
       </Nav>
     </>

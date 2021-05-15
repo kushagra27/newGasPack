@@ -13,19 +13,25 @@ const useForm = (callback) => {
     const handleInputChange = (event) => {
         event.persist();
         setInputs(inputs => ({...inputs, [event.target.name]: event.target.value}));
-        console.log(event.target.name, event.target.value)
+        // console.log(event.target.name, event.target.value)
     }
 
     const handleSelect = (event) => {
         // event.persist();
         setInputs(inputs => ({...inputs, [event]: event}));
-        console.log(event, inputs)
+        // console.log(event, inputs)
+    }
+
+    const setInitial = () => {
+        // event.persist();
+        setInputs({});
     }
 
     return {
         handleSubmit,
         handleInputChange,
         handleSelect,
+        setInitial,
         inputs
     };
 }
