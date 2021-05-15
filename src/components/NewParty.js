@@ -23,14 +23,18 @@ class NewParty extends React.Component {
     console.log(e.target.name, e.target.value)
 }
 
-  submit = (e) => {
+  handleSubmit = (e) => {
     e.preventDefault()
+    const empty = {}
     db.collection("parties")
       .doc(`${this.state.inputs["partyName"]}`)
       .set(this.state.inputs)
       .then(() => {
         console.log("Document successfully written!");
+        this.setState({inputs: empty})
+        window.location.reload()
       });
+      alert('Successfully Added')
     console.log(this.state.inputs);
   };
 

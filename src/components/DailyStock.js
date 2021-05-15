@@ -1,10 +1,10 @@
 import React from 'react'
-import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
+import { Container, Row, Col, Form, Button, Card, Spinner } from "react-bootstrap";
 import Sidebar from "./Sidebar";
 import db from "./Firestore";
 import NavbarLg from "./NavbarLg";
 import { withRouter } from 'react-router';
-import { ThemeConsumer } from 'react-bootstrap/esm/ThemeProvider';
+import DatePicker from "react-date-picker";
 
 class DailyStock extends React.Component{
     constructor(props){
@@ -34,12 +34,15 @@ class DailyStock extends React.Component{
                     gas:'N20',
                     quantity: 0
                 },
-            ]
+            ],
+            selectedDate:'',
+            loading: false
         }
     }
 
     componentDidMount = ()=>{
         console.log(this.props.gas)
+        this.setState({selectedDate: new Date()})
     }
 
     componentDidUpdate = ()=>{
@@ -81,7 +84,8 @@ class DailyStock extends React.Component{
                     gas:'N20',
                     quantity: this.state.currentN20? this.state.currentN20: 0
                 },
-            ]
+            ],
+            soldFrom: this.state.currentLocation
         }
 
         var total = this.state.total
@@ -154,8 +158,17 @@ class DailyStock extends React.Component{
         )
     }
 
+    handleUpload = ()=>{
+        
+    }
+
     render(){
         return(
+            this.state.loading?
+            <Spinner animation="border">
+
+            </Spinner>
+            :
             <>
                 <div className="d-lg-none"><NavbarLg/></div>
                 <Container fluid>
@@ -167,15 +180,20 @@ class DailyStock extends React.Component{
                             lg={10}
                             id="page-content-wrapper"
                         >
+                            <div>
+                                <DatePicker dateFormat="dd/mm/yyyy" value={this.state.selectedDate} onChange={date => this.setState({selectedDate: date})} />
+                            </div>
+
                             <table
                                 style={{borderStyle:"solid",borderWidth:"1px"}}
                             >
                                 <tr>
-                                    <th colSpan={3 + this.props.gas.length}>Filled</th>
+                                    <th colSpan={4 + this.props.gas.length}>Filled / Dispatch</th>
                                 </tr>
                                 <tr>
                                     <th>Party Name</th>
                                     <th>Challan Number</th>
+                                    <th>Location</th>
                                     <th colSpan={this.props.gas.length}>Cylinder Quantity</th>
                                     <th>Action</th>
                                 </tr>
@@ -185,6 +203,7 @@ class DailyStock extends React.Component{
                                     {this.state.gas.map(item =>{
                                         return(<th>{item.gas}</th>)
                                     })}
+                                    <th></th>
                                     <th></th>
                                 </tr>
                                 <tr>
@@ -208,6 +227,20 @@ class DailyStock extends React.Component{
                                         >
                                         </input>
                                     </td>
+                                    
+                                    <td>
+                                        <select 
+                                            as="select"
+                                            placeholder=""
+                                            value={this.state.currentLocation}
+                                            name="currentLocation"
+                                            onChange={this.handleChange}
+                                        >
+                                            <option value="">Select</option>
+                                            <option value="SHOP">SHOP</option>
+                                            <option value="CBJ">CBJ</option>
+                                        </select>
+                                    </td>
                                     {
                                         this.createGas()
                                     }
@@ -224,6 +257,7 @@ class DailyStock extends React.Component{
                                             <tr>
                                                 <td>{item.partyName}</td>
                                                 <td>{item.challanNumber}</td>
+                                                <td>{item.soldFrom}</td>
                                                 {item.cylinders.map( gas =>{
                                                     return(
                                                         <td>{gas.quantity}</td>
@@ -254,6 +288,9 @@ class DailyStock extends React.Component{
                                     </>
                                 :<></>}
                             </table>
+                            <Button onClick={this.handleUpload}>
+                                Upload
+                            </Button>
                         </Col>
                     </Row>
                 </Container>
