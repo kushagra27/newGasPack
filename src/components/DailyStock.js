@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container, Row, Col, Form, Button, Card, Spinner } from "react-bootstrap";
+import { Container, Row, Col, Form, Button, Card, Spinner,Table } from "react-bootstrap";
 import Sidebar from "./Sidebar";
 import db from "./Firestore";
 import NavbarLg from "./NavbarLg";
@@ -145,6 +145,7 @@ class DailyStock extends React.Component{
                 return(
                     <td>
                         <input
+                            style={{width:"5.8rem"}}
                             type="number"
                             placeholder={`Enter ${item.gas}`}
                             value={this.state["current"+item]}
@@ -180,13 +181,11 @@ class DailyStock extends React.Component{
                             lg={10}
                             id="page-content-wrapper"
                         >
-                            <div>
+                            <div className="mt-4 mb-4" >
                                 <DatePicker dateFormat="dd/mm/yyyy" value={this.state.selectedDate} onChange={date => this.setState({selectedDate: date})} />
                             </div>
 
-                            <table
-                                style={{borderStyle:"solid",borderWidth:"1px"}}
-                            >
+                            <Table className="mt-4 mb-4">
                                 <tr>
                                     <th colSpan={4 + this.props.gas.length}>Filled / Dispatch</th>
                                 </tr>
@@ -200,15 +199,17 @@ class DailyStock extends React.Component{
                                 <tr>
                                     <th></th>
                                     <th></th>
+                                    <th></th>
                                     {this.state.gas.map(item =>{
                                         return(<th>{item.gas}</th>)
                                     })}
                                     <th></th>
-                                    <th></th>
+                                 
                                 </tr>
                                 <tr>
                                     <td>
                                         <input 
+                                       style={{width:"8.3rem"}}
                                             type="text"
                                             placeholder="Enter Party Name"
                                             value={this.state.currentParty}
@@ -219,8 +220,9 @@ class DailyStock extends React.Component{
                                     </td>
                                     <td>
                                         <input 
+                                        style={{width:"8.3rem"}}
                                             type="number"
-                                            placeholder="Enter Challan Number"
+                                            placeholder="Enter Challan no."
                                             value={this.state.currentChallan}
                                             name="currentChallan"
                                             onChange={this.handleChange}
@@ -230,6 +232,7 @@ class DailyStock extends React.Component{
                                     
                                     <td>
                                         <select 
+                                        style={{width:"4.3rem"}}
                                             as="select"
                                             placeholder=""
                                             value={this.state.currentLocation}
@@ -277,6 +280,7 @@ class DailyStock extends React.Component{
                                     <tr>
                                         <th>Total</th>
                                         <th></th>
+                                        <th></th>
                                         {
                                             this.state.total.map(item =>{
                                                 return(
@@ -287,8 +291,8 @@ class DailyStock extends React.Component{
                                     </tr>
                                     </>
                                 :<></>}
-                            </table>
-                            <Button onClick={this.handleUpload}>
+                            </Table>
+                            <Button onClick={this.handleUpload} className="button">
                                 Upload
                             </Button>
                         </Col>

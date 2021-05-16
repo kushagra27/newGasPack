@@ -3,7 +3,7 @@ import NewParty from "./components/NewParty";
 import NewDispatch from "./components/NewDispatch";
 import NewReceive from "./components/NewReceive";
 import DailyStock from "./components/DailyStock";
-
+import '../src/App.scss'
 import {
   BrowserRouter as Router,
   Switch,
