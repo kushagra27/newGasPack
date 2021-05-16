@@ -1,281 +1,412 @@
-import React,{useState, useEffect, useRef} from "react";
-import { Container, Row, Col, Form, Button, Table, InputGroup, FormControl, Dropdown, DropdownButton } from "react-bootstrap";
-import { withRouter } from "react-router-dom";
-import useForm from "./CustomHooks";
+import React from 'react'
+import { Container, Row, Col, Form, Button, Card, Spinner } from "react-bootstrap";
 import Sidebar from "./Sidebar";
 import db from "./Firestore";
 import NavbarLg from "./NavbarLg";
-import { render } from "@testing-library/react";
+import { withRouter } from 'react-router';
+import DatePicker from "react-date-picker";
 
-class NewDispatch extends React.Component {
-  constructor(props){
-    super()
-    this.state = {
-      inputs:{
-        cylinders:[]
-      },
-      gasCount:1,
-      components:[],
-      data:[],
-      currentGas:{}
+class NewDispatch extends React.Component{
+    constructor(props){
+        super(props)
+        this.state = {
+            currentParty:'',
+            data:[],
+            gas: this.props.gas,
+            total:[
+                {
+                    gas:'O2',
+                    quantity: 0
+                },
+                {
+                    gas:'CO2',
+                    quantity: 0
+                },
+                {
+                    gas:'N2',
+                    quantity: 0
+                },
+                {
+                    gas:'DA',
+                    quantity: 0
+                },
+                {
+                    gas:'N20',
+                    quantity: 0
+                },
+            ],
+            selectedDate:'',
+            loading: true,
+            partyNamesDL:[],
+            locationWiseEntry:{}
+        }
     }
-  }
-  componentDidMount = ()=>{
-    this.updateComponents()
-    // const gasCount = this.state.gasCount + 1
-    // this.setState({gasCount})
-  }
 
-  handleInputChange = (e) => {
-    const {name, value} = e.target
-    var inputs = this.state.inputs
-    inputs[name] = value
-    this.setState({inputs})
-    console.log(e.target.name, e.target.value)
-    console.log(this.state.inputs)
-    console.log(this.state)
-  }
-
-  handleChange = (e) => {
-    const {name, value} = e.target
-    var currentGas = this.state.currentGas
-    currentGas[name] = value
-    this.setState({currentGas})
-    console.log(e.target.name, e.target.value)
-    console.log(this.state.currentGas)
-    console.log(this.state)
-  }
-  
-  handleSubmit = (e) => {
-    e.preventDefault()
-    var inputs = this.state.inputs
-    if(!this.state.currentGas['gas'] || !this.state.currentGas['gas']){
-      alert('cannot be empty')
-      return
-    } else if(this.state.currentGas['gas'] && this.state.currentGas['gas']){
-      var cur = this.state.currentGas
-        cur['sno'] = this.state.gasCount
-        inputs.cylinders.push(cur)
-    }
-    var data = this.state.data
-    data.push(inputs)
-    this.setState({data},()=>{
-      // console.log(inputs)
-      // db.collection("parties")
-      //   .doc(`${inputs["partyName"]}`)
-      //   .set(inputs)
-      //   .then(() => {
-      //     console.log("Document successfully written!");
-      //   });
-    })
-    console.log(this.state.inputs);
-    console.log(this.state.data);
-    // Object.keys(inputs).map(header =>{
-    //   if(header === 'cylinders')
-    //     inputs[header] = []
-    //   else 
-    //     inputs[header] = ''
-    // })
-    this.setState({inputs, gasCount:1, components:[]},()=>{
-      this.updateComponents()
-    })
-  };
-
-  comp = () =>{
-    return(
-      <>
-        <Form.Group controlId="formBasicPerson">
-          
-        </Form.Group>
-
-        <Form.Group controlId="exampleForm.ControlSelect1">
-          <Form.Label class="font-weight-bold">Gas Quantity</Form.Label>
-          <InputGroup>
-            <Form.Control
-              type="number"
-              placeholder="Enter Quantity"
-              value={this.state.currentGas["qty"]}
-              name={"qty"}
-              onChange={this.handleChange}
-              required
-            />
-            <InputGroup.Append>
-              <Form.Control name={"gas"} value={this.state.currentGas['gas']} onChange={this.handleChange} as="select" style={{borderRadius:"0"}} required>
-                <option value="">Select</option>
-                <option value="O2">O2</option>
-                <option value="CO2">CO2</option>
-                <option value="N2">N2</option>
-                <option value="H2">H2</option>
-                <option value="DA">DA</option>
-              </Form.Control>
-            </InputGroup.Append>
-            <InputGroup.Append>
-              <Button style={{'marginLeft':".5rem"}} variant="outline-danger">
-                Remove
-              </Button>
-            </ InputGroup.Append>     
-          </InputGroup>
-          <Form.Text className="text-muted">
-              Number and type of gas
-          </Form.Text>
-        </Form.Group>
-
-      </>
-    )
-  }
-  
-
-  updateComponents = ()=>{
-    const newVal = this.state.components.concat(this.comp())
-    this.setState({ components: newVal })
-  }
-
-  handleAddGas = () => {
-    console.log(this.state.gasCount, this.state.inputs['cylinders'])
-    if(this.state.currentGas['gas'] && this.state.currentGas['qty']){
-      // const cnt = this.state.gasCount + 1
-      // this.setState({gasCount: cnt},()=>{
-        var cur = this.state.currentGas
-        cur['sno'] = this.state.gasCount
-        var inputs = this.state.inputs
-        inputs.cylinders.push(cur)
-        this.setState({inputs, currentGas:{}, gasCount: cur['sno'] + 1 },()=>{
-          this.updateComponents()
+    componentDidMount = ()=>{
+        console.log(this.props.gas)
+        this.setState({selectedDate: new Date()})
+        var partyNamesDL = this.props.partyNames.map(item =>{
+            return(<option value={item} >{item}</option>)
         })
-      // })
-    } else {
-      alert('Enter previous first')
+        this.setState({partyNamesDL, loading:false})
     }
-  }
 
-  render(){
-    return (
-      <>
-      <div className="d-lg-none"><NavbarLg/></div>
-        <Container fluid>
+    handleChange = (e)=>{
+        const {name, value} = e.target
+        this.setState({[name]: value})
+    }
+
+    handleDate = date => {
+        const a = date.getDate()
+        const b = date.getFullYear()
+        const c = date.getMonth()+1
+        const e = b+"-"+c+'-'+a
         
-          <Row>
-            <Col lg={2} id="sidebar-wrapper" className="d-xs-none d-sm-none d-xl-block d-md-block">
-              <Sidebar />
-            </Col>
-            <Col lg={10} id="page-content-wrapper">
-              <Row className="d-flex justify-content-center">
-                <Form onSubmit={this.handleSubmit} className="mt-2 mb-2 ">
-                  <div className="card">
-                    <Form.Group controlId="formBasicName" >
-                      <Form.Label class="font-weight-bold">Party Name</Form.Label>
-                      <Form.Control
-                        type="text"
-                        placeholder="Enter Name"
-                        value={this.state.inputs["partyName"]}
-                        name="partyName"
-                        onChange={this.handleInputChange}
-                        required
-                        list="browsers"
-                      />
-                      <Form.Text className="text-muted">
-                        Name of the party
-                      </Form.Text>
-                      <datalist id="browsers">
-                        <option value="Edge" />
-                        <option value="Firefox" />
-                        <option value="Chrome" />
-                        <option value="Opera" />
-                        <option value="Safari" />
-                      </datalist>
-                    </Form.Group>
-  
-                    <Form.Group controlId="formBasicPerson" >
-                      <Form.Label class="font-weight-bold">Challan Number</Form.Label>
-                      <Form.Control
-                        type="number"
-                        placeholder="Enter Challan Number"
-                        value={this.state.inputs["challanNumber"]}
-                        name="challanNumber"
-                        onChange={this.handleInputChange}
-                        required
-                      />
-                      <Form.Text className="text-muted">
-                        Number of Challan
-                      </Form.Text>
-                    </Form.Group>
-  
-                    {this.state.components}
-  
-                    <Button onClick={this.handleAddGas} className="button mb-3"> 
-                      Add Another Gas
-                    </Button>
-  
-                    <Button type="submit" className="button"> 
-                      Submit
-                    </Button>
-                  </div>
-                </Form>
-              </Row>
-              {
-                this.state.data.length > 0?
-                  <Row>
-                    <Table
-                      striped
-                      bordered
-                      hover
-                      variant="dark"
-                      style={{ margin: "1.3rem" }}
-                    >
-                      <thead>
-                      {/* <tr>
-                        {
-                          Object.keys(data[0]).map(item =>{
-                            return(
-                              <th>{item}</th>
-                            )
-                          })
+        return e
+    }
+
+    handleSubmit = (e)=>{
+        e.preventDefault()
+        if( !(this.state.currentParty && this.state.currentChallan && (this.state.currentO2 || this.state.currentCO2 || this.state.currentN2 || this.state.currentDA || this.state.currentN20))){
+            alert('cannot be empty')
+            return
+        } 
+        const entry = {
+            partyName: this.state.currentParty,
+            challanNumber: this.state.currentChallan,
+            cylinders: [
+                {
+                    gas:'O2',
+                    quantity: this.state.currentO2? this.state.currentO2: 0
+                },
+                {
+                    gas:'CO2',
+                    quantity: this.state.currentCO2? this.state.currentCO2: 0
+                },
+                {
+                    gas:'N2',
+                    quantity: this.state.currentN2? this.state.currentN2: 0
+                },
+                {
+                    gas:'DA',
+                    quantity: this.state.currentDA? this.state.currentDA: 0
+                },
+                {
+                    gas:'N20',
+                    quantity: this.state.currentN20? this.state.currentN20: 0
+                },
+            ],
+            soldFrom: this.state.currentLocation,
+            dateSold: this.state.selectedDate
+        }
+
+        var total = this.state.total
+
+        entry.cylinders.map(item =>{
+            total.map(totItem =>{
+                if(totItem.gas === item.gas){
+                    totItem.quantity += parseInt(item.quantity)
+                }
+            })
+        })
+
+        const data = this.state.data
+        data.push(entry)
+        var locationWiseEntry = this.state.locationWiseEntry
+        if(locationWiseEntry[entry.soldFrom]){
+            locationWiseEntry[entry.soldFrom].push(entry)
+        } else {
+            locationWiseEntry[entry.soldFrom] = []
+            locationWiseEntry[entry.soldFrom].push(entry)
+        }
+        this.setState({
+            data, 
+            total, 
+            currentParty: '',
+            currentChallan: '',
+            currentO2: '',
+            currentCO2: '',
+            currentN2: '',
+            currentDA: '',
+            currentN20: '',
+            locationWiseEntry
+        })
+        console.log(entry)
+    }
+
+    handleRemove = (challanNumber)=>{
+        var data = this.state.data
+        var total = this.state.total
+        var locationWiseEntry = []
+        var arr=[]
+        console.log(locationWiseEntry)
+        data.map(item => {
+            if(item.challanNumber === challanNumber){
+                item.cylinders.map(cylItem =>{
+                    total.map(totItem =>{
+                        if(totItem.gas === cylItem.gas){
+                            totItem.quantity -= parseInt(cylItem.quantity)
                         }
-                      </tr> */}
-                        <tr>
-                          <th>#</th>
-                          <th>Party Name</th>
-                          <th>Challan Number</th>
-                          <th colSpan={6} >Cylinders</th>
-                        </tr>
-                        <tr>
-                          <th></th>
-                          <th></th>
-                          <th></th>
-                          <th>O2</th>
-                          <th>CO2</th>
-                          <th>N2</th>
-                          <th>H2</th>
-                          <th>DA</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {this.state.data.map( (item,cnt) =>{
-                          return(
-                            <tr>
-                              <td>{cnt + 1}</td>
-                              <td>{item.partyName}</td>
-                              <td>{item.challanNumber}</td>                            
-                                {item.cylinders.map(gas =>{
-                                  return(
+                    })
+                locationWiseEntry =  this.state.locationWiseEntry[item.soldFrom].filter(locItem => locItem.challanNumber !== challanNumber)
+            })
+            } else {
+                arr.push(item)
+            }
+        })
+        console.log(
+            arr, total, locationWiseEntry
+        )
+        this.setState({data: arr, total, locationWiseEntry})
+    }
+
+    createGas = ()=>{
+        return (
+            this.props.gas.map(item =>{
+                return(
+                    <td>
+                        <input
+                            type="number"
+                            placeholder={`Enter ${item.gas}`}
+                            value={this.state["current"+item]}
+                            name={`current${item.gas}`}
+                            onChange={this.handleChange}
+                        >
+                        </input>
+                    </td>
+                )
+            })
+        )
+    }
+
+    handleUpload = async ()=>{
+        try{
+            if(!this.state.selectedDate){
+                alert('Please select date')
+                return
+            }
+            const batchArray = [];
+            batchArray.push(db.batch());
+            let operationCounter = 0;
+            let batchIndex = 0;
+    
+            this.state.data.forEach(doc => {
+                const documentData = doc
+    
+                var docRef = db.collection('parties').doc(doc.partyName).collection('dispatch').doc(doc.challanNumber)
+                // update document data here...
+                batchArray[batchIndex].set(docRef, doc);
+                operationCounter++;
+    
+                if (operationCounter === 499) {
+                batchArray.push(db.batch());
+                batchIndex++;
+                operationCounter = 0;
+                }
+            });
+            await batchArray.forEach(async batch => await batch.commit());
+    
+    
+            const batchArray2 = [];
+            batchArray2.push(db.batch());
+            let operationCounter2 = 0;
+            let batchIndex2 = 0;
+    
+            this.state.data.forEach(doc => {
+                const documentData = doc
+    
+                var challanRef = db.collection('challans').doc(doc.challanNumber)
+    
+                // update document data here...
+                batchArray2[batchIndex2].set(challanRef, doc);
+                operationCounter2++;
+    
+                if (operationCounter2 === 499) {
+                batchArray2.push(db.batch());
+                batchIndex2++;
+                operationCounter2 = 0;
+                }
+            });
+            await batchArray2.forEach(async batch => await batch.commit());
+    
+            await this.updateStock()
+
+            alert('Click Ok to continue')
+            this.setState({data:[]})
+        } catch(err){
+            console.error(`updateWorkers() errored out : ${err.stack}`);
+        }
+    }
+
+    updateStock = ()=>{
+        Object.keys(this.state.locationWiseEntry).map(location =>{
+            var challanRef = db.collection('stocks').doc(location).collection(this.handleDate(this.state.selectedDate)).doc('filled')
+            console.log(challanRef)
+            // This code may get re-run multiple times if there are conflicts.
+            return db.runTransaction(async (transaction) => {
+                return transaction.get(challanRef).then((doc) => {
+                    console.log(doc.data())
+                    if (!doc.exists) {
+                        challanRef.set({challans:this.state.locationWiseEntry[location]}).then(()=>{
+                        })
+                        console.log("New Document created")
+                    } else {
+                        console.log('in else')
+                        console.log(doc.data().challans)
+                        console.log(this.state.locationWiseEntry[location])
+                        var newChallans = (doc.data().challans).concat(this.state.locationWiseEntry[location])
+                        console.log(newChallans)
+                        transaction.update(challanRef, { challans: newChallans });
+                    }
+                }).then(() => {
+                    console.log("Transaction successfully committed!");
+                }).catch((error) => {
+                    console.log("Transaction failed: ", error);
+                });
+            });
+        })
+    }
+
+    render(){
+        return(
+            this.state.loading?
+            <Spinner animation="border">
+
+            </Spinner>
+            :
+            <>
+                <div className="d-lg-none"><NavbarLg/></div>
+                <Container fluid>
+                    <Row>
+                        <Col lg={2} id="sidebar-wrapper" className="d-xs-none d-sm-none d-xl-block d-md-block">
+                            <Sidebar />
+                        </Col>
+                        <Col
+                            lg={10}
+                            id="page-content-wrapper"
+                        >
+                            <div>
+                                <DatePicker dateFormat="dd/mm/yyyy" value={this.state.selectedDate} onChange={date => this.setState({selectedDate: date})} />
+                            </div>
+
+                            <table
+                                style={{borderStyle:"solid",borderWidth:"1px"}}
+                            >
+                                <tr>
+                                    <th colSpan={4 + this.props.gas.length}>Filled / Dispatch</th>
+                                </tr>
+                                <tr>
+                                    <th>Party Name</th>
+                                    <th>Challan Number</th>
+                                    <th>Location</th>
+                                    <th colSpan={this.props.gas.length}>Cylinder Quantity</th>
+                                    <th>Action</th>
+                                </tr>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    {this.state.gas.map(item =>{
+                                        return(<th>{item.gas}</th>)
+                                    })}
+                                    <th></th>
+                                </tr>
+                                <tr>
                                     <td>
-                                      {gas.qty}
-                                    </td>)
-                                })}
-                            </tr>
-                          )
-                        })}
-                      </tbody>
-                    </Table>
-                  </Row>
-                :<></>
-              }
-            </Col>
-          </Row>
-        </Container>
-      </>
-    )
-  }
+                                        <input 
+                                            type="text"
+                                            placeholder="Enter Party Name"
+                                            value={this.state.currentParty}
+                                            name="currentParty"
+                                            onChange={this.handleChange}
+                                            list="partyNames"
+                                        >
+                                        </input>
+                                        <datalist id="partyNames">
+                                            {this.state.partyNamesDL}
+                                        </datalist>
+                                    </td>
+                                    <td>
+                                        <input 
+                                            type="number"
+                                            placeholder="Enter Challan Number"
+                                            value={this.state.currentChallan}
+                                            name="currentChallan"
+                                            onChange={this.handleChange}
+                                        >
+                                        </input>
+                                    </td>
+                                    
+                                    <td>
+                                        <select 
+                                            as="select"
+                                            placeholder=""
+                                            value={this.state.currentLocation}
+                                            name="currentLocation"
+                                            onChange={this.handleChange}
+                                        >
+                                            <option value="">Select</option>
+                                            <option value="SHOP">SHOP</option>
+                                            <option value="CBJ">CBJ</option>
+                                        </select>
+                                    </td>
+                                    {
+                                        this.createGas()
+                                    }
+                                    <td>
+                                        <Button onClick={this.handleSubmit}>
+                                            Submit
+                                        </Button>
+                                    </td>
+                                </tr>
+                                {this.state.data.length>0?
+                                <>
+                                    {this.state.data.map(item =>{
+                                        return(
+                                            <tr>
+                                                <td>{item.partyName}</td>
+                                                <td>{item.challanNumber}</td>
+                                                <td>{item.soldFrom}</td>
+                                                {item.cylinders.map( gas =>{
+                                                    return(
+                                                        <td>{gas.quantity}</td>
+                                                    )
+                                                })}
+                                                <td>
+                                                    <Button
+                                                        variant="outline-danger"
+                                                        onClick= {()=>{this.handleRemove(item.challanNumber)}}
+                                                    >
+                                                        Remove
+                                                    </Button>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })}
+                                    <tr>
+                                        <th>Total</th>
+                                        <th></th>
+                                        <th></th>
+                                        {
+                                            this.state.total.map(item =>{
+                                                return(
+                                                    <th>{item.quantity}</th>
+                                                )
+                                            })
+                                        }
+                                    </tr>
+                                    </>
+                                :<></>}
+                            </table>
+                            <Button onClick={this.handleUpload}>
+                                Upload
+                            </Button>
+                        </Col>
+                    </Row>
+                </Container>
+            </>
+        )
+    }
 }
 
-export default withRouter(NewDispatch);
+export default withRouter(NewDispatch)

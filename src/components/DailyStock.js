@@ -36,22 +36,33 @@ class DailyStock extends React.Component{
                 },
             ],
             selectedDate:'',
-            loading: false
+            loading: true,
+            partyNamesDL:[],
+            locationWiseEntry:{}
         }
     }
 
     componentDidMount = ()=>{
         console.log(this.props.gas)
         this.setState({selectedDate: new Date()})
-    }
-
-    componentDidUpdate = ()=>{
-        
+        var partyNamesDL = this.props.partyNames.map(item =>{
+            return(<option value={item} >{item}</option>)
+        })
+        this.setState({partyNamesDL, loading:false})
     }
 
     handleChange = (e)=>{
         const {name, value} = e.target
         this.setState({[name]: value})
+    }
+
+    handleDate = date => {
+        const a = date.getDate()
+        const b = date.getFullYear()
+        const c = date.getMonth()+1
+        const e = b+"-"+c+'-'+a
+        
+        return e
     }
 
     handleSubmit = (e)=>{
@@ -85,7 +96,8 @@ class DailyStock extends React.Component{
                     quantity: this.state.currentN20? this.state.currentN20: 0
                 },
             ],
-            soldFrom: this.state.currentLocation
+            soldFrom: this.state.currentLocation,
+            dateSold: this.state.selectedDate
         }
 
         var total = this.state.total
@@ -100,6 +112,13 @@ class DailyStock extends React.Component{
 
         const data = this.state.data
         data.push(entry)
+        var locationWiseEntry = this.state.locationWiseEntry
+        if(locationWiseEntry[entry.soldFrom]){
+            locationWiseEntry[entry.soldFrom].push(entry)
+        } else {
+            locationWiseEntry[entry.soldFrom] = []
+            locationWiseEntry[entry.soldFrom].push(entry)
+        }
         this.setState({
             data, 
             total, 
@@ -110,6 +129,7 @@ class DailyStock extends React.Component{
             currentN2: '',
             currentDA: '',
             currentN20: '',
+            locationWiseEntry
         })
         console.log(entry)
     }
@@ -117,26 +137,27 @@ class DailyStock extends React.Component{
     handleRemove = (challanNumber)=>{
         var data = this.state.data
         var total = this.state.total
+        var locationWiseEntry = []
         var arr=[]
+        console.log(locationWiseEntry)
         data.map(item => {
             if(item.challanNumber === challanNumber){
-                item.cylinders.map(item =>{
+                item.cylinders.map(cylItem =>{
                     total.map(totItem =>{
-                        if(totItem.gas === item.gas){
-                            totItem.quantity -= parseInt(item.quantity)
+                        if(totItem.gas === cylItem.gas){
+                            totItem.quantity -= parseInt(cylItem.quantity)
                         }
                     })
-                })
-
+                locationWiseEntry =  this.state.locationWiseEntry[item.soldFrom].filter(locItem => locItem.challanNumber !== challanNumber)
+            })
             } else {
                 arr.push(item)
             }
         })
-
         console.log(
-            arr, total
+            arr, total, locationWiseEntry
         )
-        this.setState({data: arr, total})
+        this.setState({data: arr, total, locationWiseEntry})
     }
 
     createGas = ()=>{
@@ -158,8 +179,92 @@ class DailyStock extends React.Component{
         )
     }
 
-    handleUpload = ()=>{
-        
+    handleUpload = async ()=>{
+        try{
+            if(!this.state.selectedDate){
+                alert('Please select date')
+                return
+            }
+            const batchArray = [];
+            batchArray.push(db.batch());
+            let operationCounter = 0;
+            let batchIndex = 0;
+    
+            this.state.data.forEach(doc => {
+                const documentData = doc
+    
+                var docRef = db.collection('parties').doc(doc.partyName).collection('dispatch').doc(doc.challanNumber)
+                // update document data here...
+                batchArray[batchIndex].set(docRef, doc);
+                operationCounter++;
+    
+                if (operationCounter === 499) {
+                batchArray.push(db.batch());
+                batchIndex++;
+                operationCounter = 0;
+                }
+            });
+            await batchArray.forEach(async batch => await batch.commit());
+    
+    
+            const batchArray2 = [];
+            batchArray2.push(db.batch());
+            let operationCounter2 = 0;
+            let batchIndex2 = 0;
+    
+            this.state.data.forEach(doc => {
+                const documentData = doc
+    
+                var challanRef = db.collection('challans').doc(doc.challanNumber)
+    
+                // update document data here...
+                batchArray2[batchIndex2].set(challanRef, doc);
+                operationCounter2++;
+    
+                if (operationCounter2 === 499) {
+                batchArray2.push(db.batch());
+                batchIndex2++;
+                operationCounter2 = 0;
+                }
+            });
+            await batchArray2.forEach(async batch => await batch.commit());
+    
+            await this.updateStock()
+
+            alert('Click Ok to continue')
+            this.setState({data:[]})
+        } catch(err){
+            console.error(`updateWorkers() errored out : ${err.stack}`);
+        }
+    }
+
+    updateStock = ()=>{
+        Object.keys(this.state.locationWiseEntry).map(location =>{
+            var challanRef = db.collection('stocks').doc(location).collection(this.handleDate(this.state.selectedDate)).doc('filled')
+            console.log(challanRef)
+            // This code may get re-run multiple times if there are conflicts.
+            return db.runTransaction(async (transaction) => {
+                return transaction.get(challanRef).then((doc) => {
+                    console.log(doc.data())
+                    if (!doc.exists) {
+                        challanRef.set({challans:this.state.locationWiseEntry[location]}).then(()=>{
+                        })
+                        console.log("New Document created")
+                    } else {
+                        console.log('in else')
+                        console.log(doc.data().challans)
+                        console.log(this.state.locationWiseEntry[location])
+                        var newChallans = (doc.data().challans).concat(this.state.locationWiseEntry[location])
+                        console.log(newChallans)
+                        transaction.update(challanRef, { challans: newChallans });
+                    }
+                }).then(() => {
+                    console.log("Transaction successfully committed!");
+                }).catch((error) => {
+                    console.log("Transaction failed: ", error);
+                });
+            });
+        })
     }
 
     render(){
@@ -200,10 +305,10 @@ class DailyStock extends React.Component{
                                 <tr>
                                     <th></th>
                                     <th></th>
+                                    <th></th>
                                     {this.state.gas.map(item =>{
                                         return(<th>{item.gas}</th>)
                                     })}
-                                    <th></th>
                                     <th></th>
                                 </tr>
                                 <tr>
@@ -214,8 +319,12 @@ class DailyStock extends React.Component{
                                             value={this.state.currentParty}
                                             name="currentParty"
                                             onChange={this.handleChange}
+                                            list="partyNames"
                                         >
                                         </input>
+                                        <datalist id="partyNames">
+                                            {this.state.partyNamesDL}
+                                        </datalist>
                                     </td>
                                     <td>
                                         <input 
@@ -276,6 +385,7 @@ class DailyStock extends React.Component{
                                     })}
                                     <tr>
                                         <th>Total</th>
+                                        <th></th>
                                         <th></th>
                                         {
                                             this.state.total.map(item =>{
