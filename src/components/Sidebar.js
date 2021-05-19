@@ -25,6 +25,10 @@ const Sidebar = () => {
         <Nav.Item>
           <Link to="/dailyStock">Daily Stock</Link>
         </Nav.Item>
+        <hr />
+        <Nav.Item>
+          <Link to="/partyHistory">Party History</Link>
+        </Nav.Item>
         <hr/>
       </Nav>
     </>

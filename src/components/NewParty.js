@@ -10,7 +10,7 @@ class NewParty extends React.Component {
     super()
     this.state = {
       inputs:{
-      }
+      },
     }
   }
   componentDidMount = ()=>{
@@ -20,22 +20,51 @@ class NewParty extends React.Component {
   handleInputChange = (e) => {
     const {name, value} = e.target
     this.setState(inputs => ({...inputs, [name]: value}))
-    console.log(e.target.name, e.target.value)
+    // console.log(e.target.name, e.target.value)
+}
+
+handleChange = (e)=> {
+  const {name, value} = e.target
+  this.setState({[name]: value})
 }
 
   handleSubmit = (e) => {
     e.preventDefault()
     const empty = {}
+
+    const cylinders = this.props.gas.map( item =>{
+      var obj = {
+          gas: item.gas,
+          quantity: this.state["current" + item.gas]? this.state["current" + item.gas]: 0
+      }
+      return obj
+    })
+    var obj = {
+      partyName: this.state.partyName,
+      contactPerson: this.state.contactPerson,
+      contactPerson: this.state.contactPerson,
+      contactPersonSO: this.state.contactPersonSO,
+      partyContact: this.state.partyContact,
+      partyCity: this.state.partyCity,
+      partyVillage: this.state.partyVillage,
+      partyAddress: this.state.partyAddress,
+    }
     db.collection("parties")
-      .doc(`${this.state.inputs["partyName"]}`)
-      .set(this.state.inputs)
+      .doc(`${this.state.partyName}`)
+      .set(obj)
       .then(() => {
+
+        db.collection("parties").doc(`${this.state.partyName}`).collection('dispatch').doc("OB").set({challanNumber:"OB", cylinders})
+          .then(() => {
+            console.log("Document successfully written!");
+            alert('Successfully Added')
+            window.location.reload()
+          });
+          console.log(obj);
+
         console.log("Document successfully written!");
-        this.setState({inputs: empty})
-        window.location.reload()
-      });
-      alert('Successfully Added')
-    console.log(this.state.inputs);
+      })
+    console.log(obj);
   };
 
   render(){
@@ -62,7 +91,7 @@ class NewParty extends React.Component {
                           <Form.Control
                             type="text"
                             placeholder="Enter Name"
-                            value={this.state.inputs["partyName"]}
+                            value={this.state.partyName}
                             name="partyName"
                             onChange={this.handleInputChange}
                             required
@@ -77,7 +106,7 @@ class NewParty extends React.Component {
                           <Form.Control
                             type="text"
                             placeholder="Enter Name"
-                            value={this.state.inputs["contactPerson"]}
+                            value={this.state.contactPerson}
                             name="contactPerson"
                             onChange={this.handleInputChange}
                             required
@@ -92,7 +121,7 @@ class NewParty extends React.Component {
                           <Form.Control
                             type="text"
                             placeholder="Enter Father's Name"
-                            value={this.state.inputs["contactPersonSO"]}
+                            value={this.state.contactPersonSO}
                             name="contactPersonSO"
                             onChange={this.handleInputChange}
                             required
@@ -107,7 +136,7 @@ class NewParty extends React.Component {
                           <Form.Control
                             type="number"
                             placeholder="Enter email"
-                            value={this.state.inputs["partyContact"]}
+                            value={this.state.partyContact}
                             name="partyContact"
                             onChange={this.handleInputChange}
                             required
@@ -122,7 +151,7 @@ class NewParty extends React.Component {
                           <Form.Control
                             type="text"
                             placeholder="Enter Village"
-                            value={this.state.inputs["partyVillage"]}
+                            value={this.state.partyVillage}
                             name="partyVillage"
                             onChange={this.handleInputChange}
                             required
@@ -136,7 +165,7 @@ class NewParty extends React.Component {
                           <Form.Control
                             type="text"
                             placeholder="Enter City"
-                            value={this.state.inputs["partyCity"]}
+                            value={this.state.partyCity}
                             name="partyCity"
                             onChange={this.handleInputChange}
                             required
@@ -154,7 +183,7 @@ class NewParty extends React.Component {
                         as="textarea" 
                         rows={3}
                         placeholder="Enter Address"
-                        value={this.state.inputs["partyAddress"]}
+                        value={this.state.partyAddress}
                         name="partyAddress"
                         onChange={this.handleInputChange}
                         required
@@ -164,6 +193,35 @@ class NewParty extends React.Component {
                       </Form.Text>
                     </Form.Group>
 
+                    <Form.Group>
+                      <Form.Label class="font-weight-bold">Opening Balance</Form.Label>
+                      <table>
+                        <tr>
+                          {this.props.gas.map(item =>{
+                              return(<th>{item.gas}</th>)
+                          })}
+                        </tr>
+                        <tr>
+                          {this.props.gas.map(item =>{
+                            return(
+                              <td>
+                                <input
+                                  placeholder="Enter Quantity"
+                                  value={this.state['current'+item.gas]}
+                                  name={'current'+item.gas}
+                                  type="number"
+                                  onChange = {this.handleChange}
+                                >
+                                </input>
+                              </td>
+                              )
+                          })}
+                        </tr>
+                      </table>
+                      <Form.Text className="text-muted">
+                        Opening Balance
+                      </Form.Text>
+                    </Form.Group>
                     <div className="d-flex justify-content-center">
                       <Button type="submit" className="button">
                         Submit

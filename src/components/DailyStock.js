@@ -13,40 +13,46 @@ class DailyStock extends React.Component{
             currentParty:'',
             data:[],
             gas: this.props.gas,
-            total:[
-                {
-                    gas:'O2',
-                    quantity: 0
-                },
-                {
-                    gas:'CO2',
-                    quantity: 0
-                },
-                {
-                    gas:'N2',
-                    quantity: 0
-                },
-                {
-                    gas:'DA',
-                    quantity: 0
-                },
-                {
-                    gas:'N20',
-                    quantity: 0
-                },
-            ],
+            total:[],
             selectedDate:'',
-            loading: false
+            loading: true,
+            partyNamesDL:[],
+            locationWiseEntry:{},
+            displayData:{
+                SHOP:{},
+                CBJ:{}
+            }
         }
     }
 
     componentDidMount = ()=>{
-        console.log(this.props.gas)
+        // console.log(this.props.gas)
         this.setState({selectedDate: new Date()})
-    }
+        var partyNamesDL = this.props.partyNames.map(item =>{
+            return(<option value={item} >{item}</option>)
+        })
 
-    componentDidUpdate = ()=>{
-        
+        this.setTotal()
+
+        var displayData = this.state.displayData
+        db.collection('stocks').doc('SHOP').collection(this.handleDate(new Date())).get().then(qs =>{
+            qs.forEach((doc) => {
+                displayData['SHOP'][doc.id] = doc.data()
+            });
+            db.collection('stocks').doc('CBJ').collection(this.handleDate(new Date())).get().then(qs =>{
+                qs.forEach((doc) => {
+                    displayData['CBJ'][doc.id] = doc.data()
+                });
+                console.log(displayData)
+                this.setState({partyNamesDL, displayData, loading:false })
+            })
+            .catch((error) => {
+                console.log("Error getting documents: ", error);
+            });
+        })
+        .catch((error) => {
+            console.log("Error getting documents: ", error);
+        });
     }
 
     handleChange = (e)=>{
@@ -54,113 +60,130 @@ class DailyStock extends React.Component{
         this.setState({[name]: value})
     }
 
-    handleSubmit = (e)=>{
-        e.preventDefault()
-        if( !(this.state.currentParty && this.state.currentChallan && (this.state.currentO2 || this.state.currentCO2 || this.state.currentN2 || this.state.currentDA || this.state.currentN20))){
-            alert('cannot be empty')
-            return
-        } 
-        const entry = {
-            partyName: this.state.currentParty,
-            challanNumber: this.state.currentChallan,
-            cylinders: [
-                {
-                    gas:'O2',
-                    quantity: this.state.currentO2? this.state.currentO2: 0
-                },
-                {
-                    gas:'CO2',
-                    quantity: this.state.currentCO2? this.state.currentCO2: 0
-                },
-                {
-                    gas:'N2',
-                    quantity: this.state.currentN2? this.state.currentN2: 0
-                },
-                {
-                    gas:'DA',
-                    quantity: this.state.currentDA? this.state.currentDA: 0
-                },
-                {
-                    gas:'N20',
-                    quantity: this.state.currentN20? this.state.currentN20: 0
-                },
-            ],
-            soldFrom: this.state.currentLocation
-        }
-
-        var total = this.state.total
-
-        entry.cylinders.map(item =>{
-            total.map(totItem =>{
-                if(totItem.gas === item.gas){
-                    totItem.quantity += parseInt(item.quantity)
-                }
-            })
-        })
-
-        const data = this.state.data
-        data.push(entry)
-        this.setState({
-            data, 
-            total, 
-            currentParty: '',
-            currentChallan: '',
-            currentO2: '',
-            currentCO2: '',
-            currentN2: '',
-            currentDA: '',
-            currentN20: '',
-        })
-        console.log(entry)
+    handleDate = date => {
+        const a = date.getDate()
+        const b = date.getFullYear()
+        const c = date.getMonth()+1
+        const e = b+"-"+c+'-'+a
+        
+        return e
     }
 
-    handleRemove = (challanNumber)=>{
-        var data = this.state.data
-        var total = this.state.total
-        var arr=[]
-        data.map(item => {
-            if(item.challanNumber === challanNumber){
-                item.cylinders.map(item =>{
-                    total.map(totItem =>{
-                        if(totItem.gas === item.gas){
-                            totItem.quantity -= parseInt(item.quantity)
-                        }
+    changeDate = (date) =>{
+        this.setState({selectedDate: date, loading: true})
+        var displayData = {
+            SHOP:{},
+            CBJ:{}
+        }
+        db.collection('stocks').doc('SHOP').collection(this.handleDate(date)).get().then(qs =>{
+            qs.forEach((doc) => {
+                console.log(doc.id, doc.data())
+                displayData['SHOP'][doc.id] = doc.data()
+            });
+            db.collection('stocks').doc('CBJ').collection(this.handleDate(date)).get().then(qs =>{
+                qs.forEach((doc) => {
+                    console.log(doc.id, doc.data())
+                    displayData['CBJ'][doc.id] = doc.data()
+                });
+                console.log(displayData)
+                this.setState({displayData, loading:false })
+            })
+            .catch((error) => {
+                console.log("Error getting documents: ", error);
+            });
+        })
+        .catch((error) => {
+            console.log("Error getting documents: ", error);
+        });
+
+    }
+
+    setTotal = () =>{
+        const total = this.props.gas.map( item =>{
+            var obj = {
+                gas: item.gas,
+                quantity: 0
+            }
+            return obj
+        })
+        this.setState({total})
+    }
+
+    showDispatch = (loc)=>{
+        var comp = this.state.displayData[loc]["filled"]?
+            this.state.displayData[loc]["filled"]["challans"].map(item =>{
+                return(
+                    <tr>
+                        <td>{item.partyName}</td>
+                        <td>{item.challanNumber}</td>
+                        <td>{item.soldFrom}</td>
+                        {item.cylinders.map( gas =>{
+                            return(
+                                <td>{gas.quantity}</td>
+                            )
+                        })}
+                    </tr>
+                )
+            }) 
+            : []
+
+            var total = this.state.total
+
+            if(this.state.displayData[loc]["filled"]){
+                this.state.displayData[loc]["filled"]["challans"].map( item =>{
+                    item.cylinders.map(item =>{
+                        total.map(totItem =>{
+                            if(totItem.gas === item.gas){
+                                totItem.quantity += parseInt(item.quantity)
+                            }
+                        })
                     })
                 })
-
-            } else {
-                arr.push(item)
+    
+                console.log(total)
+    
+                const arr = [
+                    <tr>
+                        <th>Total</th>
+                        <th></th>
+                        <th></th>
+                        {
+                            total.map(item =>{
+                                return(
+                                    <th>{item.quantity}</th>
+                                )
+                            })
+                        }
+                    </tr>
+                ]
+                comp.push(arr)
             }
-        })
-
-        console.log(
-            arr, total
-        )
-        this.setState({data: arr, total})
+        console.log(comp)
+        return comp
     }
 
-    createGas = ()=>{
-        return (
-            this.props.gas.map(item =>{
-                return(
-                    <td>
-                        <input
-                            style={{width:"5.8rem"}}
-                            type="number"
-                            placeholder={`Enter ${item.gas}`}
-                            value={this.state["current"+item]}
-                            name={`current${item.gas}`}
-                            onChange={this.handleChange}
-                        >
-                        </input>
-                    </td>
-                )
-            })
-        )
-    }
-
-    handleUpload = ()=>{
-        
+    showReceive = (loc) =>{
+        var comp
+        if(this.state.displayData[loc]['empty'])
+            comp = 
+                this.state.displayData[loc]["empty"]["er"].map(item =>{
+                    return(
+                        <tr>
+                            <td>{item.partyName}</td>
+                            <td>{item.erNumber}</td>
+                            <td>{item.soldFrom}</td>
+                            {item.cylinders.map( gas =>{
+                                return(
+                                    <td>{gas.quantity}</td>
+                                )
+                            })}
+                        </tr>
+                    )
+                }) 
+        else
+            comp = []
+        console.log(comp)
+        return comp
     }
 
     render(){
@@ -181,79 +204,72 @@ class DailyStock extends React.Component{
                             lg={10}
                             id="page-content-wrapper"
                         >
-                            <div className="mt-4 mb-4" >
-                                <DatePicker dateFormat="dd/mm/yyyy" value={this.state.selectedDate} onChange={date => this.setState({selectedDate: date})} />
+                            <div>
+                                <DatePicker dateFormat="dd/mm/yyyy" value={this.state.selectedDate} onChange={date => this.changeDate(date)} />
                             </div>
 
-                            <Table className="mt-4 mb-4">
-                                <tr>
-                                    <th colSpan={4 + this.props.gas.length}>Filled / Dispatch</th>
-                                </tr>
-                                <tr>
-                                    <th>Party Name</th>
-                                    <th>Challan Number</th>
-                                    <th>Location</th>
-                                    <th colSpan={this.props.gas.length}>Cylinder Quantity</th>
-                                    <th>Action</th>
-                                </tr>
-                                <tr>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    {this.state.gas.map(item =>{
-                                        return(<th>{item.gas}</th>)
-                                    })}
-                                    <th></th>
-                                 
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <input 
-                                       style={{width:"8.3rem"}}
-                                            type="text"
-                                            placeholder="Enter Party Name"
-                                            value={this.state.currentParty}
-                                            name="currentParty"
-                                            onChange={this.handleChange}
-                                        >
-                                        </input>
-                                    </td>
-                                    <td>
-                                        <input 
-                                        style={{width:"8.3rem"}}
-                                            type="number"
-                                            placeholder="Enter Challan no."
-                                            value={this.state.currentChallan}
-                                            name="currentChallan"
-                                            onChange={this.handleChange}
-                                        >
-                                        </input>
-                                    </td>
-                                    
-                                    <td>
-                                        <select 
-                                        style={{width:"4.3rem"}}
-                                            as="select"
-                                            placeholder=""
-                                            value={this.state.currentLocation}
-                                            name="currentLocation"
-                                            onChange={this.handleChange}
-                                        >
-                                            <option value="">Select</option>
-                                            <option value="SHOP">SHOP</option>
-                                            <option value="CBJ">CBJ</option>
-                                        </select>
-                                    </td>
-                                    {
-                                        this.createGas()
-                                    }
-                                    <td>
-                                        <Button onClick={this.handleSubmit}>
-                                            Submit
-                                        </Button>
-                                    </td>
-                                </tr>
-                                {this.state.data.length>0?
+                            <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example">
+                                <Tab eventKey="shop" title="SHOP">
+                                    <Tabs defaultActiveKey="location" id="uncontrolled">
+                                        <Tab eventKey="dispatch" title="Dispatch">
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <th colSpan={3 + this.props.gas.length}>Dispatch</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Party Name</th>
+                                                        <th>Challan Number</th>
+                                                        <th>Location</th>
+                                                        <th colSpan={this.props.gas.length}>Cylinder Quantity</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        {this.state.gas.map(item =>{
+                                                            return(<th>{item.gas}</th>)
+                                                        })}
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {
+                                                    
+                                                        this.showDispatch('SHOP')
+                                                    
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </Tab>
+                                        <Tab eventKey="receive" title="Receive">
+                                        <table>
+                                                <thead>
+                                                    <tr>
+                                                        <th colSpan={3 + this.props.gas.length}>Receive</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Party Name</th>
+                                                        <th>ER Number</th>
+                                                        <th>Location</th>
+                                                        <th colSpan={this.props.gas.length}>Cylinder Quantity</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        {this.state.gas.map(item =>{
+                                                            return(<th>{item.gas}</th>)
+                                                        })}
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {this.showReceive('SHOP')}
+                                                </tbody>
+                                            </table>
+                                        </Tab>
+                                        </Tabs>
+
+                                {/* {this.state.data.length>0?
                                 <>
                                     {this.state.data.map(item =>{
                                         return(
@@ -290,11 +306,70 @@ class DailyStock extends React.Component{
                                         }
                                     </tr>
                                     </>
-                                :<></>}
-                            </Table>
-                            <Button onClick={this.handleUpload} className="button">
-                                Upload
-                            </Button>
+                                    :<></>} */}
+                            
+                                </Tab>
+                                <Tab eventKey="cbj" title="CBJ">
+                                    <Tabs defaultActiveKey="location" id="uncontrolled">
+                                        <Tab eventKey="dispatch" title="Dispatch">
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <th colSpan={3 + this.props.gas.length}>Dispatch</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Party Name</th>
+                                                        <th>Challan Number</th>
+                                                        <th>Location</th>
+                                                        <th colSpan={this.props.gas.length}>Cylinder Quantity</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        {this.state.gas.map(item =>{
+                                                            return(<th>{item.gas}</th>)
+                                                        })}
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {
+                                                    
+                                                        this.showDispatch('CBJ')
+                                                    
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </Tab>
+                                        <Tab eventKey="receive" title="Receive">
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <th colSpan={3 + this.props.gas.length}>Receive</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Party Name</th>
+                                                        <th>ER Number</th>
+                                                        <th>Location</th>
+                                                        <th colSpan={this.props.gas.length}>Cylinder Quantity</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        {this.state.gas.map(item =>{
+                                                            return(<th>{item.gas}</th>)
+                                                        })}
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {this.showReceive('CBJ')}
+                                                </tbody>
+                                            </table>
+                                        </Tab>
+                                    </Tabs>
+                                </Tab>
+                            </Tabs>
                         </Col>
                     </Row>
                 </Container>
