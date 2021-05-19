@@ -13,6 +13,7 @@ import {
 import React from "react";
 import db from "./components/Firestore";
 import { Spinner } from "react-bootstrap";
+import PartyHistory from "./components/PartyHistory";
 
 
 class App extends React.Component {
@@ -20,11 +21,15 @@ class App extends React.Component {
     super()
     this.state = {
       gas: [
-        {gas: 'O2'}, 
-        {gas: 'CO2'}, 
+        {gas: 'O2'},
+        {gas: 'DA'},
         {gas: 'N2'}, 
-        {gas: 'DA'}, 
-        {gas: 'N20'}
+        {gas: 'H2'},
+        {gas: 'AMM'},
+        {gas: 'CO2'}, 
+        {gas: 'ARG'},
+        {gas: 'AIR'},
+        {gas: 'N20'},
       ],
       loading: true,
       partyNames:[]
@@ -55,10 +60,11 @@ class App extends React.Component {
       <div className="App">
         <Router>
           <Route exact path='/' component={Dashboard} />
-          <Route exact path='/newParty' component={NewParty} />
+          <Route exact path='/newParty' component={()=><NewParty gas={this.state.gas} />} />
           <Route exact path='/newDispatch' component={()=><NewDispatch gas={this.state.gas} partyNames={this.state.partyNames} />} />
           <Route exact path='/newReceive' component={()=><NewReceive gas={this.state.gas} partyNames={this.state.partyNames} />} />
           <Route exact path='/dailyStock' component={()=><DailyStock gas={this.state.gas} partyNames={this.state.partyNames} />} />
+          <Route exact path='/partyHistory' component={()=><PartyHistory gas={this.state.gas} partyNames={this.state.partyNames} />} />
           {/* <Route exact path='/contact' component={Contact} /> */}
         </Router>    
       </div>

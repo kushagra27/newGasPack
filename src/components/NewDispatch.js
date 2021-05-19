@@ -13,32 +13,12 @@ class NewDispatch extends React.Component{
             currentParty:'',
             data:[],
             gas: this.props.gas,
-            total:[
-                {
-                    gas:'O2',
-                    quantity: 0
-                },
-                {
-                    gas:'CO2',
-                    quantity: 0
-                },
-                {
-                    gas:'N2',
-                    quantity: 0
-                },
-                {
-                    gas:'DA',
-                    quantity: 0
-                },
-                {
-                    gas:'N20',
-                    quantity: 0
-                },
-            ],
+            total:[],
             selectedDate:'',
             loading: true,
             partyNamesDL:[],
-            locationWiseEntry:{}
+            locationWiseEntry:{},
+            clicked: false
         }
     }
 
@@ -48,7 +28,15 @@ class NewDispatch extends React.Component{
         var partyNamesDL = this.props.partyNames.map(item =>{
             return(<option value={item} >{item}</option>)
         })
-        this.setState({partyNamesDL, loading:false})
+        const total = this.props.gas.map( item =>{
+            var obj = {
+                gas: item.gas,
+                quantity: 0
+            }
+            return obj
+        })
+        // console.log(total)
+        this.setState({partyNamesDL, total, loading:false, gas: this.state.gas})
     }
 
     handleChange = (e)=>{
@@ -67,35 +55,24 @@ class NewDispatch extends React.Component{
 
     handleSubmit = (e)=>{
         e.preventDefault()
-        if( !(this.state.currentParty && this.state.currentChallan && (this.state.currentO2 || this.state.currentCO2 || this.state.currentN2 || this.state.currentDA || this.state.currentN20))){
+        if( !(this.state.currentParty && this.state.currentChallan && (this.state.currentO2 || this.state.currentCO2 || this.state.currentN2 || this.state.currentDA || this.state.currentN20 || this.state.currentH2 || this.state.currentAMM || this.state.currentARG || this.state.currentAIR))){
             alert('cannot be empty')
             return
-        } 
+        }
+
+        const cylinders = this.props.gas.map( gasItem =>{
+            var obj = {
+                gas: gasItem.gas,
+                quantity: this.state["current" + gasItem.gas]? this.state["current" + gasItem.gas]: 0
+            }
+            return obj
+        })
+
+        console.log(cylinders)
         const entry = {
             partyName: this.state.currentParty,
             challanNumber: this.state.currentChallan,
-            cylinders: [
-                {
-                    gas:'O2',
-                    quantity: this.state.currentO2? this.state.currentO2: 0
-                },
-                {
-                    gas:'CO2',
-                    quantity: this.state.currentCO2? this.state.currentCO2: 0
-                },
-                {
-                    gas:'N2',
-                    quantity: this.state.currentN2? this.state.currentN2: 0
-                },
-                {
-                    gas:'DA',
-                    quantity: this.state.currentDA? this.state.currentDA: 0
-                },
-                {
-                    gas:'N20',
-                    quantity: this.state.currentN20? this.state.currentN20: 0
-                },
-            ],
+            cylinders: cylinders,
             soldFrom: this.state.currentLocation,
             dateSold: this.state.selectedDate
         }
@@ -121,7 +98,8 @@ class NewDispatch extends React.Component{
         }
         this.setState({
             data, 
-            total, 
+            total,
+            gas: this.state.gas,
             currentParty: '',
             currentChallan: '',
             currentO2: '',
@@ -129,6 +107,10 @@ class NewDispatch extends React.Component{
             currentN2: '',
             currentDA: '',
             currentN20: '',
+            currentH2:'',
+            currentAMM:'',
+            currentARG:'',
+            currentAIR:'',
             locationWiseEntry
         })
         console.log(entry)
@@ -162,13 +144,13 @@ class NewDispatch extends React.Component{
 
     createGas = ()=>{
         return (
-            this.props.gas.map(item =>{
+            this.state.gas.map(item =>{
                 return(
                     <td>
                         <input
                             type="number"
                             placeholder={`Enter ${item.gas}`}
-                            value={this.state["current"+item]}
+                            value={this.state["current"+item.gas]}
                             name={`current${item.gas}`}
                             onChange={this.handleChange}
                         >
@@ -180,6 +162,7 @@ class NewDispatch extends React.Component{
     }
 
     handleUpload = async ()=>{
+        this.setState({clicked: true})
         try{
             if(!this.state.selectedDate){
                 alert('Please select date')
@@ -232,7 +215,7 @@ class NewDispatch extends React.Component{
             await this.updateStock()
 
             alert('Click Ok to continue')
-            this.setState({data:[]})
+            this.setState({data:[], clicked: false})
         } catch(err){
             console.error(`updateWorkers() errored out : ${err.stack}`);
         }
@@ -278,9 +261,9 @@ class NewDispatch extends React.Component{
                 <div className="d-lg-none"><NavbarLg/></div>
                 <Container fluid>
                     <Row>
-                        <Col lg={2} id="sidebar-wrapper" className="d-xs-none d-sm-none d-xl-block d-md-block">
+                        {/* <Col lg={2} id="sidebar-wrapper" className="d-xs-none d-sm-none d-xl-block d-md-block">
                             <Sidebar />
-                        </Col>
+                        </Col> */}
                         <Col
                             lg={10}
                             id="page-content-wrapper"
@@ -351,7 +334,9 @@ class NewDispatch extends React.Component{
                                         </select>
                                     </td>
                                     {
-                                        this.createGas()
+                                        this.state.data ?
+                                            this.createGas()
+                                        : <></>
                                     }
                                     <td>
                                         <Button onClick={this.handleSubmit}>
@@ -398,7 +383,7 @@ class NewDispatch extends React.Component{
                                     </>
                                 :<></>}
                             </table>
-                            <Button onClick={this.handleUpload}>
+                            <Button onClick={this.handleUpload} disabled={this.state.clicked}>
                                 Upload
                             </Button>
                         </Col>

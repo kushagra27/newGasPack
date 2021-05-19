@@ -13,32 +13,12 @@ class NewReceive extends React.Component{
             currentParty:'',
             data:[],
             gas: this.props.gas,
-            total:[
-                {
-                    gas:'O2',
-                    quantity: 0
-                },
-                {
-                    gas:'CO2',
-                    quantity: 0
-                },
-                {
-                    gas:'N2',
-                    quantity: 0
-                },
-                {
-                    gas:'DA',
-                    quantity: 0
-                },
-                {
-                    gas:'N20',
-                    quantity: 0
-                },
-            ],
+            total:[],
             selectedDate:'',
             loading: true,
             partyNamesDL:[],
-            locationWiseEntry:{}
+            locationWiseEntry:{},
+            clicked: false
         }
     }
 
@@ -48,7 +28,14 @@ class NewReceive extends React.Component{
         var partyNamesDL = this.props.partyNames.map(item =>{
             return(<option value={item} >{item}</option>)
         })
-        this.setState({partyNamesDL, loading:false})
+        const total = this.props.gas.map( item =>{
+            var obj = {
+                gas: item.gas,
+                quantity: 0
+            }
+            return obj
+        })
+        this.setState({partyNamesDL, total, loading:false})
     }
 
     handleChange = (e)=>{
@@ -67,35 +54,24 @@ class NewReceive extends React.Component{
 
     handleSubmit = (e)=>{
         e.preventDefault()
-        if( !(this.state.currentParty && this.state.currentER && (this.state.currentO2 || this.state.currentCO2 || this.state.currentN2 || this.state.currentDA || this.state.currentN20))){
+        if( !(this.state.currentParty && this.state.currentER && (this.state.currentO2 || this.state.currentCO2 || this.state.currentN2 || this.state.currentDA || this.state.currentN20 || this.state.currentH2 || this.state.currentAMM || this.state.currentARG || this.state.currentAIR))){
             alert('cannot be empty')
             return
-        } 
+        }
+
+        const cylinders = this.props.gas.map( gasItem =>{
+            var obj = {
+                gas: gasItem.gas,
+                quantity: this.state["current" + gasItem.gas]? this.state["current" + gasItem.gas]: 0
+            }
+            return obj
+        })
+
+
         const entry = {
             partyName: this.state.currentParty,
             erNumber: this.state.currentER,
-            cylinders: [
-                {
-                    gas:'O2',
-                    quantity: this.state.currentO2? this.state.currentO2: 0
-                },
-                {
-                    gas:'CO2',
-                    quantity: this.state.currentCO2? this.state.currentCO2: 0
-                },
-                {
-                    gas:'N2',
-                    quantity: this.state.currentN2? this.state.currentN2: 0
-                },
-                {
-                    gas:'DA',
-                    quantity: this.state.currentDA? this.state.currentDA: 0
-                },
-                {
-                    gas:'N20',
-                    quantity: this.state.currentN20? this.state.currentN20: 0
-                },
-            ],
+            cylinders: cylinders,
             soldFrom: this.state.currentLocation,
             dateSold: this.state.selectedDate
         }
@@ -129,6 +105,10 @@ class NewReceive extends React.Component{
             currentN2: '',
             currentDA: '',
             currentN20: '',
+            currentH2:'',
+            currentAMM:'',
+            currentARG:'',
+            currentAIR:'',
             locationWiseEntry
         })
         console.log(entry)
@@ -168,7 +148,7 @@ class NewReceive extends React.Component{
                         <input
                             type="number"
                             placeholder={`Enter ${item.gas}`}
-                            value={this.state["current"+item]}
+                            value={this.state["current"+item.gas]}
                             name={`current${item.gas}`}
                             onChange={this.handleChange}
                         >
@@ -180,6 +160,7 @@ class NewReceive extends React.Component{
     }
 
     handleUpload = async ()=>{
+        this.setState({clicked: true})
         try{
             if(!this.state.selectedDate){
                 alert('Please select date')
@@ -232,7 +213,7 @@ class NewReceive extends React.Component{
             await this.updateStock()
 
             alert('Click Ok to continue')
-            this.setState({data:[]})
+            this.setState({data:[], clicked: false})
         } catch(err){
             console.error(`updateWorkers() errored out : ${err.stack}`);
         }
@@ -248,16 +229,16 @@ class NewReceive extends React.Component{
                 return transaction.get(challanRef).then((doc) => {
                     console.log(doc.data())
                     if (!doc.exists) {
-                        challanRef.set({challans:this.state.locationWiseEntry[location]}).then(()=>{
+                        challanRef.set({er:this.state.locationWiseEntry[location]}).then(()=>{
                         })
                         console.log("New Document created")
                     } else {
                         console.log('in else')
-                        console.log(doc.data().challans)
+                        console.log(doc.data().er)
                         console.log(this.state.locationWiseEntry[location])
-                        var newChallans = (doc.data().challans).concat(this.state.locationWiseEntry[location])
-                        console.log(newChallans)
-                        transaction.update(challanRef, { challans: newChallans });
+                        var newER = (doc.data().er).concat(this.state.locationWiseEntry[location])
+                        console.log(newER)
+                        transaction.update(challanRef, { er: newER });
                     }
                 }).then(() => {
                     console.log("Transaction successfully committed!");
@@ -399,7 +380,7 @@ class NewReceive extends React.Component{
                                     </>
                                 :<></>}
                             </table>
-                            <Button onClick={this.handleUpload}>
+                            <Button onClick={this.handleUpload} disabled={this.state.clicked}>
                                 Upload
                             </Button>
                         </Col>

@@ -10,7 +10,7 @@ class NewParty extends React.Component {
     super()
     this.state = {
       inputs:{
-      }
+      },
     }
   }
   componentDidMount = ()=>{
@@ -23,9 +23,22 @@ class NewParty extends React.Component {
     // console.log(e.target.name, e.target.value)
 }
 
+handleChange = (e)=> {
+  const {name, value} = e.target
+  this.setState({[name]: value})
+}
+
   handleSubmit = (e) => {
     e.preventDefault()
     const empty = {}
+
+    const cylinders = this.props.gas.map( item =>{
+      var obj = {
+          gas: item.gas,
+          quantity: this.state["current" + item.gas]? this.state["current" + item.gas]: 0
+      }
+      return obj
+    })
     var obj = {
       partyName: this.state.partyName,
       contactPerson: this.state.contactPerson,
@@ -40,10 +53,17 @@ class NewParty extends React.Component {
       .doc(`${this.state.partyName}`)
       .set(obj)
       .then(() => {
+
+        db.collection("parties").doc(`${this.state.partyName}`).collection('dispatch').doc("OB").set({challanNumber:"OB", cylinders})
+          .then(() => {
+            console.log("Document successfully written!");
+            alert('Successfully Added')
+            window.location.reload()
+          });
+          console.log(obj);
+
         console.log("Document successfully written!");
-        window.location.reload()
-      });
-      alert('Successfully Added')
+      })
     console.log(obj);
   };
 
@@ -174,17 +194,32 @@ class NewParty extends React.Component {
                     </Form.Group>
 
                     <Form.Group>
-                      <Form.Label class="font-weight-bold">Party Village</Form.Label>
-                      <Form.Control
-                        type="text"
-                        placeholder="Enter Opening Balance"
-                        value={this.state.partyVillage}
-                        name="partyVillage"
-                        onChange={this.handleInputChange}
-                        required
-                      />
+                      <Form.Label class="font-weight-bold">Opening Balance</Form.Label>
+                      <table>
+                        <tr>
+                          {this.props.gas.map(item =>{
+                              return(<th>{item.gas}</th>)
+                          })}
+                        </tr>
+                        <tr>
+                          {this.props.gas.map(item =>{
+                            return(
+                              <td>
+                                <input
+                                  placeholder="Enter Quantity"
+                                  value={this.state['current'+item.gas]}
+                                  name={'current'+item.gas}
+                                  type="number"
+                                  onChange = {this.handleChange}
+                                >
+                                </input>
+                              </td>
+                              )
+                          })}
+                        </tr>
+                      </table>
                       <Form.Text className="text-muted">
-                        Village of Party
+                        Opening Balance
                       </Form.Text>
                     </Form.Group>
                     <div className="d-flex justify-content-center">
