@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container, Row, Col, Form, Button, Card, Spinner,Table } from "react-bootstrap";
+import { Container, Row, Col, Form, Button, Card, Spinner, Tab, Tabs} from "react-bootstrap";
 import Sidebar from "./Sidebar";
 import db from "./Firestore";
 import NavbarLg from "./NavbarLg";

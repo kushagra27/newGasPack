@@ -150,3 +150,9 @@ td, th, table{
 th{
   padding: 0.5rem;
 }
+.newPartytable input::placeholder{
+  white-space: pre-wrap;
+}
+.newRectable input::placeholder{
+  white-space: pre-wrap;
+}
