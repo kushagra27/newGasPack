@@ -38,7 +38,7 @@ hr {
   border-top: 3px solid rgba(202, 202, 202, 0.1);
 }
 .nav-item {
-  padding: 0rem 1rem;
+  padding: 0.5rem 1rem;
 }
 .nav-item a:hover {
   color: white;
@@ -167,7 +167,15 @@ th {
 .newRectable {
   box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px;
 }
-
-td {
-  border-radius: 100%;
+.tab {
+  margin-top: 1rem;
+}
+.tab .nav-item:hover {
+  border-bottom: #252525 1px solid;
+}
+a{
+  color: #252525;
+}
+a:hover{
+  color: #252525;
 }
