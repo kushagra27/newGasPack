@@ -7,18 +7,18 @@ body {
   width: 100vw;
   overflow-x: hidden;
 }
-#lgNav{
+#lgNav {
   background-color: #252525;
 }
-#lgNav .nav-item{
+#lgNav .nav-item {
   padding: 0;
   margin: 0;
 }
-#lgNav a{
+#lgNav a {
   text-decoration: none;
   color: #80ffdb;
 }
-#brand{
+#brand {
   color: white;
 }
 .sidebar {
@@ -140,19 +140,34 @@ hr {
   box-shadow: none;
   border: solid #80ffdb 1px;
 }
-td, th, table{
+td,
+th,
+table {
   border-style: solid;
-  border-width: 1px; 
-  padding:0;
-  overflow-x:auto;
-  table-layout:fixed;
+  border-width: 1px;
+  padding: 0;
+  overflow-x: auto;
+  table-layout: fixed;
 }
-th{
+th {
   padding: 0.5rem;
 }
-.newPartytable input::placeholder{
+.newPartytable input::placeholder {
   white-space: pre-wrap;
 }
-.newRectable input::placeholder{
+.newRectable input::placeholder {
   white-space: pre-wrap;
+}
+.newDisptable input::placeholder {
+  white-space: pre-wrap;
+}
+
+.newDisptable,
+.newPartytable,
+.newRectable {
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px;
+}
+
+td {
+  border-radius: 100%;
 }

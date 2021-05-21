@@ -361,6 +361,7 @@ class NewReceive extends React.Component{
                                                 })}
                                                 <td>
                                                     <Button
+                                                        className="m-2"
                                                         variant="outline-danger"
                                                         onClick= {()=>{this.handleRemove(item.erNumber)}}
                                                     >
@@ -385,7 +386,7 @@ class NewReceive extends React.Component{
                                     </>
                                 :<></>}
                             </table>
-                            <Button onClick={this.handleUpload} disabled={this.state.clicked}  className="mt-2">
+                            <Button onClick={this.handleUpload} disabled={this.state.clicked}  className="button mt-4">
                                 Upload
                             </Button>
                         </Col>

@@ -206,7 +206,7 @@ handleChange = (e)=> {
                             return(
                               <td>
                                 <input
-                                  style={{width:"7rem",padding:"0.5rem 1rem 2rem 1rem"}}
+                                  style={{width:"7rem",padding:"0.5rem 1rem 2rem 1rem", border:"none"}}
                                   placeholder="Enter Quantity"
                                   value={this.state['current'+item.gas]}
                                   name={'current'+item.gas}
