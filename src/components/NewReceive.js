@@ -146,6 +146,7 @@ class NewReceive extends React.Component{
                 return(
                     <td>
                         <input
+                            style={{width:"5rem",padding:"0rem 0.5rem 1.5rem 0.5rem", border:"none"}}
                             type="number"
                             placeholder={`Enter ${item.gas}`}
                             value={this.state["current"+item.gas]}
@@ -267,12 +268,13 @@ class NewReceive extends React.Component{
                             lg={10}
                             id="page-content-wrapper"
                         >
-                            <div>
+                            <div  className="mt-2 mb-4">
                                 <DatePicker dateFormat="dd/mm/yyyy" value={this.state.selectedDate} onChange={date => this.setState({selectedDate: date})} />
                             </div>
 
                             <table
                                 style={{borderStyle:"solid",borderWidth:"1px"}}
+                                className="newRectable"
                             >
                                 <tr>
                                     <th colSpan={4 + this.props.gas.length}>Empty / Receive</th>
@@ -296,6 +298,7 @@ class NewReceive extends React.Component{
                                 <tr>
                                     <td>
                                         <input 
+                                            style={{width:"6rem",padding:"0rem 0.5rem 1.5rem 0.5rem", border:"none"}}
                                             type="text"
                                             placeholder="Enter Party Name"
                                             value={this.state.currentParty}
@@ -310,6 +313,7 @@ class NewReceive extends React.Component{
                                     </td>
                                     <td>
                                         <input 
+                                            style={{width:"6rem",padding:"0rem 0.5rem 1.5rem 0.5rem", border:"none"}}
                                             type="number"
                                             placeholder="Enter Challan Number"
                                             value={this.state.currentER}
@@ -321,6 +325,7 @@ class NewReceive extends React.Component{
                                     
                                     <td>
                                         <select 
+                                            style={{width:"6rem",padding:"0rem 0.5rem 1.5rem 0.5rem", border:"none"}}
                                             as="select"
                                             placeholder=""
                                             value={this.state.currentLocation}
@@ -336,7 +341,7 @@ class NewReceive extends React.Component{
                                         this.createGas()
                                     }
                                     <td>
-                                        <Button onClick={this.handleSubmit}>
+                                        <Button onClick={this.handleSubmit} className="m-2">
                                             Submit
                                         </Button>
                                     </td>
@@ -356,6 +361,7 @@ class NewReceive extends React.Component{
                                                 })}
                                                 <td>
                                                     <Button
+                                                        className="m-2"
                                                         variant="outline-danger"
                                                         onClick= {()=>{this.handleRemove(item.erNumber)}}
                                                     >
@@ -380,7 +386,7 @@ class NewReceive extends React.Component{
                                     </>
                                 :<></>}
                             </table>
-                            <Button onClick={this.handleUpload} disabled={this.state.clicked}>
+                            <Button onClick={this.handleUpload} disabled={this.state.clicked}  className="button mt-4">
                                 Upload
                             </Button>
                         </Col>

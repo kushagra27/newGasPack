@@ -195,10 +195,10 @@ handleChange = (e)=> {
 
                     <Form.Group>
                       <Form.Label class="font-weight-bold">Opening Balance</Form.Label>
-                      <table>
+                      <table className="newPartytable">
                         <tr>
                           {this.props.gas.map(item =>{
-                              return(<th>{item.gas}</th>)
+                              return(<th >{item.gas}</th>)
                           })}
                         </tr>
                         <tr>
@@ -206,6 +206,7 @@ handleChange = (e)=> {
                             return(
                               <td>
                                 <input
+                                  style={{width:"7rem",padding:"0.5rem 1rem 2rem 1rem", border:"none"}}
                                   placeholder="Enter Quantity"
                                   value={this.state['current'+item.gas]}
                                   name={'current'+item.gas}
