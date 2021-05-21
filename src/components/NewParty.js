@@ -54,7 +54,7 @@ handleChange = (e)=> {
       .set(obj)
       .then(() => {
 
-        db.collection("parties").doc(`${this.state.partyName}`).collection('dispatch').doc("OB").set({challanNumber:"OB", cylinders})
+        db.collection("parties").doc(`${this.state.partyName}`).collection('dispatch').doc("OB").set({challanNumber:"OB", cylinders, dateSold: new Date()})
           .then(() => {
             console.log("Document successfully written!");
             alert('Successfully Added')
