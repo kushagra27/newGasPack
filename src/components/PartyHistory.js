@@ -139,23 +139,25 @@ class PartyHistory extends React.Component{
                             lg={10}
                             id="page-content-wrapper"
                         >
-                            <div>
+                            <div className="d-flex mt-3 mb-4 justify-content-left align-items-center">
                                 <input 
                                     type="text"
                                     placeholder="Enter Party Name"
                                     value={this.state.currentParty}
                                     name="currentParty"
                                     onChange={this.handleChange}
+                                    className="input mr-4"
                                     list="partyNames"
                                 >
                                 </input>
                                 <datalist id="partyNames">
                                     {this.state.partyNamesDL}
                                 </datalist>
-                                <Button onClick={this.handleSubmit}>
+                                <Button onClick={this.handleSubmit} className="button btn">
                                     OK
                                 </Button>
                             </div>
+                            
                             <table>
                                 <thead>
                                     <tr>

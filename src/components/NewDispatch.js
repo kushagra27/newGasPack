@@ -148,7 +148,7 @@ class NewDispatch extends React.Component{
                 return(
                     <td>
                         <input
-                            style={{width:"5rem",padding:"0rem 0.5rem 1.5rem 0.5rem", border:"none"}}
+                            style={{width:"5rem",padding:"0.5rem 0.5rem 1.5rem 0.5rem", border:"none"}}
                             type="number"
                             placeholder={`Enter ${item.gas}`}
                             value={this.state["current"+item.gas]}
@@ -299,7 +299,7 @@ class NewDispatch extends React.Component{
                                 <tr>
                                     <td>
                                         <input 
-                                            style={{width:"6rem",padding:"0rem 0.5rem 1.5rem 0.5rem", border:"none"}}
+                                            style={{width:"6rem",padding:"0.5rem 0.5rem 1.5rem 0.5rem", border:"none"}}
                                             type="text"
                                             placeholder="Enter Party Name"
                                             value={this.state.currentParty}
@@ -314,7 +314,7 @@ class NewDispatch extends React.Component{
                                     </td>
                                     <td>
                                         <input 
-                                            style={{width:"6rem",padding:"0rem 0.5rem 1.5rem 0.5rem", border:"none"}}
+                                            style={{width:"6rem",padding:"0.5rem 0.5rem 1.5rem 0.5rem", border:"none"}}
                                             type="number"
                                             placeholder="Enter Challan Number"
                                             value={this.state.currentChallan}
@@ -326,7 +326,7 @@ class NewDispatch extends React.Component{
                                     
                                     <td>
                                         <select 
-                                            style={{width:"6rem",padding:"0rem 0.5rem 1.5rem 0.5rem", border:"none"}}
+                                            style={{width:"6rem",padding:"0.5rem 0.5rem 1.5rem 0.5rem", border:"none"}}
                                             as="select"
                                             placeholder=""
                                             value={this.state.currentLocation}
