@@ -204,12 +204,12 @@ class DailyStock extends React.Component{
                             lg={10}
                             id="page-content-wrapper"
                         >
-                            <div>
+                            <div className="mt-3">
                                 <DatePicker dateFormat="dd/mm/yyyy" value={this.state.selectedDate} onChange={date => this.changeDate(date)} />
                             </div>
 
-                            <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example">
-                                <Tab eventKey="shop" title="SHOP">
+                            <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example" className="tab d-flex align-items-center">
+                                <Tab eventKey="shop" title="SHOP" >
                                     <Tabs defaultActiveKey="location" id="uncontrolled">
                                         <Tab eventKey="dispatch" title="Dispatch">
                                             <table>
@@ -309,10 +309,10 @@ class DailyStock extends React.Component{
                                     :<></>} */}
                             
                                 </Tab>
-                                <Tab eventKey="cbj" title="CBJ">
+                                <Tab eventKey="cbj" title="CBJ" >
                                     <Tabs defaultActiveKey="location" id="uncontrolled">
                                         <Tab eventKey="dispatch" title="Dispatch">
-                                            <table>
+                                            <table >
                                                 <thead>
                                                     <tr>
                                                         <th colSpan={3 + this.props.gas.length}>Dispatch</th>

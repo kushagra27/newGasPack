@@ -3,8 +3,6 @@ body {
   padding: 0;
   /* font-family: "Montserrat", sans-serif; */
   margin: 0;
-  height: 100vh;
-  width: 100vw;
   overflow-x: hidden;
 }
 #lgNav {
@@ -38,7 +36,7 @@ hr {
   border-top: 3px solid rgba(202, 202, 202, 0.1);
 }
 .nav-item {
-  padding: 0rem 1rem;
+  padding: 0.5rem 1rem;
 }
 .nav-item a:hover {
   color: white;
@@ -166,4 +164,32 @@ th {
 .newPartytable,
 .newRectable {
   box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px;
+}
+.tab {
+  margin-top: 1rem;
+}
+.tab .nav-item:hover {
+  border-bottom: #252525 1px solid;
+}
+a{
+  color: #252525;
+}
+a:hover{
+  color: #252525;
+}
+.input{
+  border: 1px solid #252525;
+  border-radius: 0.5rem;
+  padding: 0.5rem 2rem;
+}
+.input:focus{
+  color: #252525;
+  outline: none !important;
+  box-shadow: none;
+  border: solid #80ffdb 1px;
+}
+.input:hover {
+  outline: none !important;
+  box-shadow: none;
+  border: solid #80ffdb 1px;
 }
