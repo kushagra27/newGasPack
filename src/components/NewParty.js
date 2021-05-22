@@ -35,7 +35,7 @@ handleChange = (e)=> {
     const cylinders = this.props.gas.map( item =>{
       var obj = {
           gas: item.gas,
-          quantity: this.state["current" + item.gas]? this.state["current" + item.gas]: 0
+          quantity: this.state["current" + item.gas]? parseInt(this.state["current" + item.gas]): 0
       }
       return obj
     })
@@ -48,6 +48,7 @@ handleChange = (e)=> {
       partyCity: this.state.partyCity,
       partyVillage: this.state.partyVillage,
       partyAddress: this.state.partyAddress,
+      balance: cylinders,
     }
     db.collection("parties")
       .doc(`${this.state.partyName}`)

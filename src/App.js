@@ -3,6 +3,10 @@ import NewParty from "./components/NewParty";
 import NewDispatch from "./components/NewDispatch";
 import NewReceive from "./components/NewReceive";
 import DailyStock from "./components/DailyStock";
+import PartyHistory from "./components/PartyHistory";
+import GasRegister from "./components/GasRegister";
+import AllPartyRegister from "./components/AllPartyRegister";
+
 import '../src/App.scss'
 import {
   BrowserRouter as Router,
@@ -13,7 +17,6 @@ import {
 import React from "react";
 import db from "./components/Firestore";
 import { Spinner } from "react-bootstrap";
-import PartyHistory from "./components/PartyHistory";
 
 
 class App extends React.Component {
@@ -65,6 +68,8 @@ class App extends React.Component {
           <Route exact path='/newReceive' component={()=><NewReceive gas={this.state.gas} partyNames={this.state.partyNames} />} />
           <Route exact path='/dailyStock' component={()=><DailyStock gas={this.state.gas} partyNames={this.state.partyNames} />} />
           <Route exact path='/partyHistory' component={()=><PartyHistory gas={this.state.gas} partyNames={this.state.partyNames} />} />
+          <Route exact path='/gasRegister' component={()=><GasRegister gas={this.state.gas} partyNames={this.state.partyNames} />} />
+          <Route exact path='/allPartyRegister' component={()=><AllPartyRegister gas={this.state.gas} partyNames={this.state.partyNames} />} />
           {/* <Route exact path='/contact' component={Contact} /> */}
         </Router>    
       </div>

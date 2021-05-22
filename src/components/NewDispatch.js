@@ -162,6 +162,33 @@ class NewDispatch extends React.Component{
         )
     }
 
+    tns = (obj)=>{
+        return db.runTransaction((transaction) => {
+            // This code may get re-run multiple times if there are conflicts.
+            return transaction.get(obj.docRef).then((doc) => {
+                if (!doc.exists) {
+                    throw "Document does not exist!";
+                }
+
+                var balance = doc.data().balance
+                console.log(balance)
+                console.log(obj.dispatchItem)
+                balance.map( balanceItem =>{
+                    obj.dispatchItem.cylinders.map(cylItem =>{
+                        if(cylItem.gas === balanceItem.gas)
+                            balanceItem.quantity += parseInt(cylItem.quantity)
+                    })
+                })
+                transaction.set(obj.dispatchRef, obj.dispatchItem);
+                transaction.update(obj.docRef, {balance: balance});
+            });
+        }).then(() => {
+            console.log("Transaction successfully committed!");
+        }).catch((error) => {
+            console.log("Transaction failed: ", error);
+        });
+    }
+
     handleUpload = async ()=>{
         this.setState({clicked: true})
         try{
@@ -169,36 +196,20 @@ class NewDispatch extends React.Component{
                 alert('Please select date')
                 return
             }
-            const batchArray = [];
-            batchArray.push(db.batch());
-            let operationCounter = 0;
-            let batchIndex = 0;
-    
-            this.state.data.forEach(doc => {
-                const documentData = doc
-    
-                var docRef = db.collection('parties').doc(doc.partyName).collection('dispatch').doc(doc.challanNumber)
-                // update document data here...
-                batchArray[batchIndex].set(docRef, doc);
-                operationCounter++;
-    
-                if (operationCounter === 499) {
-                batchArray.push(db.batch());
-                batchIndex++;
-                operationCounter = 0;
-                }
-            });
-            await batchArray.forEach(async batch => await batch.commit());
-    
-    
+            
             const batchArray2 = [];
             batchArray2.push(db.batch());
             let operationCounter2 = 0;
             let batchIndex2 = 0;
-    
-            this.state.data.forEach(doc => {
-                const documentData = doc
-    
+
+            await this.state.data.forEach(doc => {
+                var obj = {
+                    dispatchRef: db.collection('parties').doc(doc.partyName).collection('dispatch').doc(doc.challanNumber),
+                    docRef: db.collection('parties').doc(doc.partyName),
+                    dispatchItem: doc,
+                    docBalance: doc.cylinders
+                }
+                this.tns(obj)
                 var challanRef = db.collection('challans').doc(doc.challanNumber)
     
                 // update document data here...
@@ -213,7 +224,7 @@ class NewDispatch extends React.Component{
             });
             await batchArray2.forEach(async batch => await batch.commit());
     
-            await this.updateStock()
+            // await this.updateStock()
 
             alert('Click Ok to continue')
             this.setState({data:[], clicked: false})

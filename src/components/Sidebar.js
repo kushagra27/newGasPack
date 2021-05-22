@@ -30,6 +30,14 @@ const Sidebar = () => {
           <Link to="/partyHistory">Party History</Link>
         </Nav.Item>
         <hr/>
+        <Nav.Item>
+          <Link to="/allPartyRegister">All Party Register</Link>
+        </Nav.Item>
+        <hr/>
+        <Nav.Item>
+          <Link to="/gasRegister">Gas Register</Link>
+        </Nav.Item>
+        <hr/>
       </Nav>
     </>
   );
