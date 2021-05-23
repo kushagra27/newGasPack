@@ -148,7 +148,7 @@ table {
   table-layout: fixed;
 }
 th {
-  padding: 0.5rem;
+  padding: 0.7rem;
 }
 .newPartytable input::placeholder {
   white-space: pre-wrap;
@@ -162,7 +162,7 @@ th {
 
 .newDisptable,
 .newPartytable,
-.newRectable {
+.newRectable, table {
   box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px;
 }
 .tab {

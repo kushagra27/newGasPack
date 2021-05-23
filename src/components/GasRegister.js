@@ -132,14 +132,14 @@ class GasRegister extends React.Component{
                 <div className="d-lg-none"><NavbarLg/></div>
                 <Container fluid>
                     <Row>
-                        <Col lg={2} id="sidebar-wrapper" className="d-xs-none d-sm-none d-xl-block d-md-block">
+                        
                             <Sidebar />
-                        </Col>
+                        
                         <Col
                             lg={10}
                             id="page-content-wrapper"
                         >
-                            <div>
+                            <div className="mt-3 mb-4">
                                 <input 
                                     type="text"
                                     placeholder="Enter Party Name"
@@ -147,12 +147,13 @@ class GasRegister extends React.Component{
                                     name="currentParty"
                                     onChange={this.handleChange}
                                     list="partyNames"
+                                    className="input mr-4"
                                 >
                                 </input>
                                 <datalist id="partyNames">
                                     {this.state.partyNamesDL}
                                 </datalist>
-                                <Button onClick={this.handleSubmit}>
+                                <Button onClick={this.handleSubmit}  className="button btn">
                                     OK
                                 </Button>
                             </div>
@@ -168,7 +169,7 @@ class GasRegister extends React.Component{
                                             return(<th colSpan={3}>{item.gas}</th>)
                                         })}
                                     </tr>
-                                    <tr>
+                                    <tr >
                                         <th></th>
                                         <th></th>
                                         {this.props.gas.map(item =>{
