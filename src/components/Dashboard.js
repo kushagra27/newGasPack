@@ -11,7 +11,7 @@ const Dashboard = () => {
         <Row>
           <Sidebar />
 
-          <Col lg={10} id="page-content-wrapper" className="d-flex justify-content-between align-items-center">
+          <Col lg={10} id="page-content-wrapper" className="mt-3">
             <NewLogin />
           </Col>
         </Row>

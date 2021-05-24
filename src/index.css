@@ -143,7 +143,7 @@ th,
 table {
   border-style: solid;
   border-width: 1px;
-  padding: 0;
+  padding: 0rem;
   overflow-x: auto;
   table-layout: fixed;
 }
@@ -192,4 +192,8 @@ a:hover{
   outline: none !important;
   box-shadow: none;
   border: solid #80ffdb 1px;
+}
+tr:hover{
+  background-color: #252525;
+  color: #80ffdb;
 }

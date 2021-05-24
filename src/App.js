@@ -11,6 +11,7 @@ import EditER from "./components/EditER";
 import DispatchSupplier from "./components/DispatchSupplier";
 import ReceiveSupplier from "./components/ReceiveSupplier";
 import Test from "./components/Test";
+import UserProvider from "./components/UserProvider"
 
 import '../src/App.scss'
 import {
@@ -65,7 +66,8 @@ class App extends React.Component {
 
       </Spinner>
       :
-      <div className="App">
+      <UserProvider>
+          <div className="App">
         <Router>
           <Route exact path='/' component={Dashboard} />
           <Route exact path='/newParty' component={()=><NewParty gas={this.state.gas} />} />
@@ -83,6 +85,8 @@ class App extends React.Component {
           {/* <Route exact path='/contact' component={Contact} /> */}
         </Router>    
       </div>
+      </UserProvider>
+      
     )
   }
 }
