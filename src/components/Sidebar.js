@@ -1,10 +1,10 @@
 import React from "react";
-import { Nav } from "react-bootstrap";
+import { Nav, Col } from "react-bootstrap";
 import { withRouter, Link} from 'react-router-dom';
 
 const Sidebar = () => {
   return (
-    <>
+    <Col lg={2} id="sidebar-wrapper" className="d-xs-none d-sm-none d-xl-block d-md-block">
       <Nav
         className="bg-dark sidebar "
         activeKey="/home"
@@ -55,7 +55,7 @@ const Sidebar = () => {
         </Nav.Item>
         <hr/>
       </Nav>
-    </>
+    </Col>
   );
 };
 
