@@ -6,6 +6,11 @@ import DailyStock from "./components/DailyStock";
 import PartyHistory from "./components/PartyHistory";
 import GasRegister from "./components/GasRegister";
 import AllPartyRegister from "./components/AllPartyRegister";
+import EditChallan from "./components/EditChallan";
+import EditER from "./components/EditER";
+import DispatchSupplier from "./components/DispatchSupplier";
+import ReceiveSupplier from "./components/ReceiveSupplier";
+import Test from "./components/Test";
 
 import '../src/App.scss'
 import {
@@ -65,11 +70,16 @@ class App extends React.Component {
           <Route exact path='/' component={Dashboard} />
           <Route exact path='/newParty' component={()=><NewParty gas={this.state.gas} />} />
           <Route exact path='/newDispatch' component={()=><NewDispatch gas={this.state.gas} partyNames={this.state.partyNames} />} />
+          <Route exact path='/dispatchSupplier' component={()=><DispatchSupplier gas={this.state.gas} partyNames={this.state.partyNames} />} />
           <Route exact path='/newReceive' component={()=><NewReceive gas={this.state.gas} partyNames={this.state.partyNames} />} />
+          <Route exact path='/receiveSupplier' component={()=><ReceiveSupplier gas={this.state.gas} partyNames={this.state.partyNames} />} />
           <Route exact path='/dailyStock' component={()=><DailyStock gas={this.state.gas} partyNames={this.state.partyNames} />} />
           <Route exact path='/partyHistory' component={()=><PartyHistory gas={this.state.gas} partyNames={this.state.partyNames} />} />
           <Route exact path='/gasRegister' component={()=><GasRegister gas={this.state.gas} partyNames={this.state.partyNames} />} />
           <Route exact path='/allPartyRegister' component={()=><AllPartyRegister gas={this.state.gas} partyNames={this.state.partyNames} />} />
+          <Route exact path='/editChallan' component={()=><EditChallan gas={this.state.gas} partyNames={this.state.partyNames} />} />
+          <Route exact path='/editEr' component={()=><EditER gas={this.state.gas} partyNames={this.state.partyNames} />} />
+          <Route exact path='/test' component={()=><Test gas={this.state.gas} partyNames={this.state.partyNames} />} />
           {/* <Route exact path='/contact' component={Contact} /> */}
         </Router>    
       </div>

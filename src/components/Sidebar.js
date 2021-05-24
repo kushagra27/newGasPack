@@ -23,6 +23,14 @@ const Sidebar = () => {
         </Nav.Item>
         <hr />
         <Nav.Item>
+          <Link to="/dispatchSupplier">Dispatch to Supplier</Link>
+        </Nav.Item>
+        <hr/>
+        <Nav.Item>
+          <Link to="/receiveSupplier">Receive from Supplier</Link>
+        </Nav.Item>
+        <hr/>
+        <Nav.Item>
           <Link to="/dailyStock">Daily Stock</Link>
         </Nav.Item>
         <hr />
@@ -36,6 +44,14 @@ const Sidebar = () => {
         <hr/>
         <Nav.Item>
           <Link to="/gasRegister">Gas Register</Link>
+        </Nav.Item>
+        <hr/>
+        <Nav.Item>
+          <Link to="/editChallan">Edit Challan</Link>
+        </Nav.Item>
+        <hr/>
+        <Nav.Item>
+          <Link to="/editEr">Edit ER</Link>
         </Nav.Item>
         <hr/>
       </Nav>

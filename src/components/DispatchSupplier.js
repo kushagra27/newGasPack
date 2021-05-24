@@ -6,17 +6,17 @@ import NavbarLg from "./NavbarLg";
 import { withRouter } from 'react-router';
 import DatePicker from "react-date-picker";
 
-class NewDispatch extends React.Component{
+class DispatchSupplier extends React.Component{
     constructor(props){
         super(props)
         this.state = {
-            currentParty:'',
+            currentSupplier:'',
             data:[],
             gas: this.props.gas,
             total:[],
             selectedDate:'',
             loading: true,
-            partyNamesDL:[],
+            supplierNamesDL:[],
             locationWiseEntry:{},
             clicked: false
         }
@@ -25,18 +25,26 @@ class NewDispatch extends React.Component{
     componentDidMount = ()=>{
         console.log(this.props.gas)
         this.setState({selectedDate: new Date()})
-        var partyNamesDL = this.props.partyNames.map(item =>{
-            return(<option value={item} >{item}</option>)
+
+        var supplierList = []
+        var suppliers = []
+        db.collection('suppliers').get().then(qs =>{
+            qs.forEach(doc=>{
+                supplierList.push(<option value={doc.id} >{doc.id}</option>)
+                suppliers.push(doc.data())
+            })
+            const total = this.props.gas.map( item =>{
+                var obj = {
+                    gas: item.gas,
+                    quantity: 0
+                }
+                return obj
+            })
+            // console.log(total)
+            this.setState({suppliers, supplierList, total, loading:false, gas: this.props.gas})
+
         })
-        const total = this.props.gas.map( item =>{
-            var obj = {
-                gas: item.gas,
-                quantity: 0
-            }
-            return obj
-        })
-        // console.log(total)
-        this.setState({partyNamesDL, total, loading:false, gas: this.state.gas})
+
     }
 
     handleChange = (e)=>{
@@ -55,7 +63,7 @@ class NewDispatch extends React.Component{
 
     handleSubmit = (e)=>{
         e.preventDefault()
-        if( !(this.state.currentParty && this.state.currentChallan && (this.state.currentO2 || this.state.currentCO2 || this.state.currentN2 || this.state.currentDA || this.state.currentN20 || this.state.currentH2 || this.state.currentAMM || this.state.currentARG || this.state.currentAIR))){
+        if( !(this.state.currentSupplier && this.state.currentChallan && (this.state.currentO2 || this.state.currentCO2 || this.state.currentN2 || this.state.currentDA || this.state.currentN20 || this.state.currentH2 || this.state.currentAMM || this.state.currentARG || this.state.currentAIR))){
             alert('cannot be empty')
             return
         }
@@ -70,7 +78,7 @@ class NewDispatch extends React.Component{
 
         console.log(cylinders)
         const entry = {
-            partyName: this.state.currentParty,
+            supplierName: this.state.currentSupplier,
             challanNumber: this.state.currentChallan,
             cylinders: cylinders,
             soldFrom: this.state.currentLocation,
@@ -100,7 +108,7 @@ class NewDispatch extends React.Component{
             data, 
             total,
             gas: this.state.gas,
-            currentParty: '',
+            currentSupplier: '',
             currentChallan: '',
             currentO2: '',
             currentCO2: '',
@@ -204,13 +212,13 @@ class NewDispatch extends React.Component{
 
             await this.state.data.forEach(doc => {
                 var obj = {
-                    dispatchRef: db.collection('parties').doc(doc.partyName).collection('dispatch').doc(doc.challanNumber),
-                    docRef: db.collection('parties').doc(doc.partyName),
+                    dispatchRef: db.collection('suppliers').doc(doc.supplierName).collection('dispatch').doc(doc.challanNumber),
+                    docRef: db.collection('suppliers').doc(doc.supplierName),
                     dispatchItem: doc,
                     docBalance: doc.cylinders
                 }
                 this.tns(obj)
-                var challanRef = db.collection('challans').doc(doc.challanNumber)
+                var challanRef = db.collection('dispatchMemo').doc(doc.challanNumber)
     
                 // update document data here...
                 batchArray2[batchIndex2].set(challanRef, doc);
@@ -235,26 +243,25 @@ class NewDispatch extends React.Component{
 
     updateStock = ()=>{
         Object.keys(this.state.locationWiseEntry).map(location =>{
-            var challanRef = db.collection('stocks').doc(location).collection(this.handleDate(this.state.selectedDate)).doc('filled')
+            var challanRef = db.collection('stocks').doc(location).collection(this.handleDate(this.state.selectedDate)).doc('empty')
             console.log(challanRef)
             // This code may get re-run multiple times if there are conflicts.
             return db.runTransaction(async (transaction) => {
                 return transaction.get(challanRef).then((doc) => {
                     console.log(doc.data())
                     if (!doc.exists) {
-                        challanRef.set({challans:this.state.locationWiseEntry[location]}).then(()=>{
-                        })
+                        challanRef.set({dispatch :this.state.locationWiseEntry[location]}).then(()=>{})
                         console.log("New Document created")
-                    } else if(!doc.data().challans){
-                        challanRef.update({challans :this.state.locationWiseEntry[location]}).then(()=>{})
+                    } else if(!doc.data().dispatch){
+                        challanRef.update({dispatch :this.state.locationWiseEntry[location]}).then(()=>{})
                     }
                     else {
                         console.log('in else')
-                        console.log(doc.data().challans)
+                        console.log(doc.data().dispatch)
                         console.log(this.state.locationWiseEntry[location])
-                        var newChallans = (doc.data().challans).concat(this.state.locationWiseEntry[location])
+                        var newChallans = (doc.data().dispatch).concat(this.state.locationWiseEntry[location])
                         console.log(newChallans)
-                        transaction.update(challanRef, { challans: newChallans });
+                        transaction.update(challanRef, { dispatch: newChallans });
                     }
                 }).then(() => {
                     console.log("Transaction successfully committed!");
@@ -295,8 +302,8 @@ class NewDispatch extends React.Component{
                                     <th colSpan={4 + this.props.gas.length}>Filled / Dispatch</th>
                                 </tr>
                                 <tr>
-                                    <th>Party Name</th>
-                                    <th>Challan Number</th>
+                                    <th>Supplier Name</th>
+                                    <th>Memo Number</th>
                                     <th>Location</th>
                                     <th colSpan={this.props.gas.length}>Cylinder Quantity</th>
                                     <th>Action</th>
@@ -316,14 +323,14 @@ class NewDispatch extends React.Component{
                                             style={{width:"6rem",padding:"0.5rem 0.5rem 1.5rem 0.5rem", border:"none"}}
                                             type="text"
                                             placeholder="Enter Party Name"
-                                            value={this.state.currentParty}
-                                            name="currentParty"
+                                            value={this.state.currentSupplier}
+                                            name="currentSupplier"
                                             onChange={this.handleChange}
-                                            list="partyNames"
+                                            list="suppliers"
                                         >
                                         </input>
-                                        <datalist id="partyNames">
-                                            {this.state.partyNamesDL}
+                                        <datalist id="suppliers">
+                                            {this.state.supplierList}
                                         </datalist>
                                     </td>
                                     <td>
@@ -368,7 +375,7 @@ class NewDispatch extends React.Component{
                                     {this.state.data.map(item =>{
                                         return(
                                             <tr>
-                                                <td>{item.partyName}</td>
+                                                <td>{item.supplierName}</td>
                                                 <td>{item.challanNumber}</td>
                                                 <td>{item.soldFrom}</td>
                                                 {item.cylinders.map( gas =>{
@@ -414,4 +421,4 @@ class NewDispatch extends React.Component{
     }
 }
 
-export default withRouter(NewDispatch)
+export default withRouter(DispatchSupplier)

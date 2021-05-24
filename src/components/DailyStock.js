@@ -64,7 +64,7 @@ class DailyStock extends React.Component{
         const a = date.getDate()
         const b = date.getFullYear()
         const c = date.getMonth()+1
-        const e = b+"-"+c+'-'+a
+        const e = a+"-"+c+'-'+b
         
         return e
     }

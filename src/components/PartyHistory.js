@@ -1,11 +1,13 @@
 import React from 'react'
-import { Container, Row, Col, Tabs, Tab, Card, Spinner, Button, InputGroup, ThemeProvider } from "react-bootstrap";
+import { Container, Row, Col, Tabs, Tab, Card, Spinner, Button, Modal } from "react-bootstrap";
 import Sidebar from "./Sidebar";
 import db from "./Firestore";
 import NavbarLg from "./NavbarLg";
 import { withRouter } from 'react-router';
 import DatePicker from "react-date-picker";
 import _ from "lodash";
+import EditChallan from './EditChallan'
+import EditER from './EditER'
 
 class PartyHistory extends React.Component{
     constructor(props){
@@ -21,7 +23,8 @@ class PartyHistory extends React.Component{
             displayData:{
                 SHOP:{},
                 CBJ:{}
-            }
+            },
+            modalShow: false,
         }
     }
 
@@ -31,6 +34,12 @@ class PartyHistory extends React.Component{
         })
         this.setZero()
         this.setState({loading: false, partyNamesDL})
+        if(this.props.pn){
+            console.log(this.props.pn)
+            this.setState({currentParty: this.props.pn},()=>{
+                this.handleSubmit()
+            })
+        }
     }
 
     setZero = ()=>{
@@ -71,7 +80,7 @@ class PartyHistory extends React.Component{
         const b = this.state.d
         var comp = sorted.map( item =>{
             return(
-                <tr>
+                <tr onClick={()=>{this.openModal(item.challanNumber?item.challanNumber:item.erNumber,item.challanNumber?"challan":"er")}}>
                     <td>{this.handleDate(item.dateSold.toDate())}</td>
                     <td>{item.challanNumber?item.challanNumber:item.erNumber}</td>
                     {
@@ -84,19 +93,19 @@ class PartyHistory extends React.Component{
                                     arr.push(<td>{cylItem.quantity?cylItem.quantity:'-'}</td>)
                                     arr.push(<td>{'-'}</td>)
                                     arr.push(<td>{d[cylItem.gas]?d[cylItem.gas]:'-'}</td>)
-                                    console.log(d)
-                                    console.log(cylItem, item.challanNumber)
+                                    // console.log(d)
+                                    // console.log(cylItem, item.challanNumber)
                                 } else if (item.erNumber){
                                     d[gasItem.gas] -= parseInt(cylItem.quantity)
                                     arr.push(<td>{'-'}</td>)
                                     arr.push(<td>{cylItem.quantity?cylItem.quantity:'-'}</td>)
                                     arr.push(<td>{d[cylItem.gas]?d[cylItem.gas]:'-'}</td>)
-                                    console.log(d)
-                                    console.log(cylItem, item.erNumber)
+                                    // console.log(d)
+                                    // console.log(cylItem, item.erNumber)
                                 }
                             }
                         })
-                        console.log(d)
+                        // console.log(d)
                         return arr
                     })}
                 </tr>
@@ -115,6 +124,10 @@ class PartyHistory extends React.Component{
         return e
     }
 
+    openModal = (number, type)=>{
+        type === "challan"? this.setState({modalType: "challan"}): this.setState({modalType: "er"})
+        this.setState({modalShow: true, number})
+    }
 
     handleChange = (e)=>{
         const {name, value} = e.target
@@ -186,6 +199,25 @@ class PartyHistory extends React.Component{
                                     {this.state.toShow}
                                 </tbody>
                             </table>
+                            <Modal
+                                size="lg"
+                                show={this.state.modalShow}
+                                onHide={() => this.setState({modalShow: false})}
+                                aria-labelledby="example-modal-sizes-title-lg"
+                            >
+                                <Modal.Header closeButton>
+                                <Modal.Title id="example-modal-sizes-title-lg">
+                                    Large Modal
+                                </Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    {this.state.type === 'challan'?
+                                        <EditChallan gas={this.props.gas} challanNumber={this.state.number} />
+                                    :
+                                        <EditER gas={this.props.gas} erNumber={this.state.number} />
+                                    }
+                                </Modal.Body>
+                            </Modal>
                         </Col>
                     </Row>
                 </Container>

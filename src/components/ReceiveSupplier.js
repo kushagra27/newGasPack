@@ -6,11 +6,11 @@ import NavbarLg from "./NavbarLg";
 import { withRouter } from 'react-router';
 import DatePicker from "react-date-picker";
 
-class NewDispatch extends React.Component{
+class ReceiveSupplier extends React.Component{
     constructor(props){
         super(props)
         this.state = {
-            currentParty:'',
+            currentSupplier:'',
             data:[],
             gas: this.props.gas,
             total:[],
@@ -25,18 +25,25 @@ class NewDispatch extends React.Component{
     componentDidMount = ()=>{
         console.log(this.props.gas)
         this.setState({selectedDate: new Date()})
-        var partyNamesDL = this.props.partyNames.map(item =>{
-            return(<option value={item} >{item}</option>)
+        var supplierList = []
+        var suppliers = []
+        db.collection('suppliers').get().then(qs =>{
+            qs.forEach(doc=>{
+                supplierList.push(<option value={doc.id} >{doc.id}</option>)
+                suppliers.push(doc.data())
+            })
+            const total = this.props.gas.map( item =>{
+                var obj = {
+                    gas: item.gas,
+                    quantity: 0
+                }
+                return obj
+            })
+            // console.log(total)
+            this.setState({suppliers, supplierList, total, loading:false, gas: this.props.gas})
+
         })
-        const total = this.props.gas.map( item =>{
-            var obj = {
-                gas: item.gas,
-                quantity: 0
-            }
-            return obj
-        })
-        // console.log(total)
-        this.setState({partyNamesDL, total, loading:false, gas: this.state.gas})
+
     }
 
     handleChange = (e)=>{
@@ -55,7 +62,7 @@ class NewDispatch extends React.Component{
 
     handleSubmit = (e)=>{
         e.preventDefault()
-        if( !(this.state.currentParty && this.state.currentChallan && (this.state.currentO2 || this.state.currentCO2 || this.state.currentN2 || this.state.currentDA || this.state.currentN20 || this.state.currentH2 || this.state.currentAMM || this.state.currentARG || this.state.currentAIR))){
+        if( !(this.state.currentSupplier && this.state.currentER && (this.state.currentO2 || this.state.currentCO2 || this.state.currentN2 || this.state.currentDA || this.state.currentN20 || this.state.currentH2 || this.state.currentAMM || this.state.currentARG || this.state.currentAIR))){
             alert('cannot be empty')
             return
         }
@@ -68,10 +75,10 @@ class NewDispatch extends React.Component{
             return obj
         })
 
-        console.log(cylinders)
+
         const entry = {
-            partyName: this.state.currentParty,
-            challanNumber: this.state.currentChallan,
+            partyName: this.state.currentSupplier,
+            erNumber: this.state.currentER,
             cylinders: cylinders,
             soldFrom: this.state.currentLocation,
             dateSold: this.state.selectedDate
@@ -98,10 +105,9 @@ class NewDispatch extends React.Component{
         }
         this.setState({
             data, 
-            total,
-            gas: this.state.gas,
-            currentParty: '',
-            currentChallan: '',
+            total, 
+            currentSupplier: '',
+            currentER: '',
             currentO2: '',
             currentCO2: '',
             currentN2: '',
@@ -116,21 +122,21 @@ class NewDispatch extends React.Component{
         console.log(entry)
     }
 
-    handleRemove = (challanNumber)=>{
+    handleRemove = (erNumber)=>{
         var data = this.state.data
         var total = this.state.total
         var locationWiseEntry = []
         var arr=[]
         console.log(locationWiseEntry)
         data.map(item => {
-            if(item.challanNumber === challanNumber){
+            if(item.erNumber === erNumber){
                 item.cylinders.map(cylItem =>{
                     total.map(totItem =>{
                         if(totItem.gas === cylItem.gas){
                             totItem.quantity -= parseInt(cylItem.quantity)
                         }
                     })
-                locationWiseEntry =  this.state.locationWiseEntry[item.soldFrom].filter(locItem => locItem.challanNumber !== challanNumber)
+                locationWiseEntry =  this.state.locationWiseEntry[item.soldFrom].filter(locItem => locItem.erNumber !== erNumber)
             })
             } else {
                 arr.push(item)
@@ -144,7 +150,7 @@ class NewDispatch extends React.Component{
 
     createGas = ()=>{
         return (
-            this.state.gas.map(item =>{
+            this.props.gas.map(item =>{
                 return(
                     <td>
                         <input
@@ -172,14 +178,14 @@ class NewDispatch extends React.Component{
 
                 var balance = doc.data().balance
                 console.log(balance)
-                console.log(obj.dispatchItem)
+                console.log(obj.receiveItem)
                 balance.map( balanceItem =>{
-                    obj.dispatchItem.cylinders.map(cylItem =>{
+                    obj.receiveItem.cylinders.map(cylItem =>{
                         if(cylItem.gas === balanceItem.gas)
-                            balanceItem.quantity += parseInt(cylItem.quantity)
+                            balanceItem.quantity -= parseInt(cylItem.quantity)
                     })
                 })
-                transaction.set(obj.dispatchRef, obj.dispatchItem);
+                transaction.set(obj.receiveRef, obj.receiveItem);
                 transaction.update(obj.docRef, {balance: balance});
             });
         }).then(() => {
@@ -196,7 +202,8 @@ class NewDispatch extends React.Component{
                 alert('Please select date')
                 return
             }
-            
+
+
             const batchArray2 = [];
             batchArray2.push(db.batch());
             let operationCounter2 = 0;
@@ -204,16 +211,16 @@ class NewDispatch extends React.Component{
 
             await this.state.data.forEach(doc => {
                 var obj = {
-                    dispatchRef: db.collection('parties').doc(doc.partyName).collection('dispatch').doc(doc.challanNumber),
-                    docRef: db.collection('parties').doc(doc.partyName),
-                    dispatchItem: doc,
+                    receiveRef: db.collection('suppliers').doc(doc.partyName).collection('receive').doc(doc.erNumber),
+                    docRef: db.collection('suppliers').doc(doc.partyName),
+                    receiveItem: doc,
                     docBalance: doc.cylinders
                 }
                 this.tns(obj)
-                var challanRef = db.collection('challans').doc(doc.challanNumber)
+                var erRef = db.collection('receiveMemo').doc(doc.erNumber)
     
                 // update document data here...
-                batchArray2[batchIndex2].set(challanRef, doc);
+                batchArray2[batchIndex2].set(erRef, doc);
                 operationCounter2++;
     
                 if (operationCounter2 === 499) {
@@ -231,6 +238,7 @@ class NewDispatch extends React.Component{
         } catch(err){
             console.error(`updateWorkers() errored out : ${err.stack}`);
         }
+        
     }
 
     updateStock = ()=>{
@@ -242,19 +250,18 @@ class NewDispatch extends React.Component{
                 return transaction.get(challanRef).then((doc) => {
                     console.log(doc.data())
                     if (!doc.exists) {
-                        challanRef.set({challans:this.state.locationWiseEntry[location]}).then(()=>{
+                        challanRef.set({er:this.state.locationWiseEntry[location]}).then(()=>{
                         })
                         console.log("New Document created")
-                    } else if(!doc.data().challans){
-                        challanRef.update({challans :this.state.locationWiseEntry[location]}).then(()=>{})
-                    }
-                    else {
+                    } else if(!doc.data().receive){
+                        challanRef.update({receive :this.state.locationWiseEntry[location]}).then(()=>{})
+                    } else {
                         console.log('in else')
-                        console.log(doc.data().challans)
+                        console.log(doc.data().er)
                         console.log(this.state.locationWiseEntry[location])
-                        var newChallans = (doc.data().challans).concat(this.state.locationWiseEntry[location])
-                        console.log(newChallans)
-                        transaction.update(challanRef, { challans: newChallans });
+                        var newER = (doc.data().er).concat(this.state.locationWiseEntry[location])
+                        console.log(newER)
+                        transaction.update(challanRef, { er: newER });
                     }
                 }).then(() => {
                     console.log("Transaction successfully committed!");
@@ -283,20 +290,20 @@ class NewDispatch extends React.Component{
                             lg={10}
                             id="page-content-wrapper"
                         >
-                            <div className="mt-2 mb-4">
+                            <div  className="mt-2 mb-4">
                                 <DatePicker dateFormat="dd/mm/yyyy" value={this.state.selectedDate} onChange={date => this.setState({selectedDate: date})} />
                             </div>
 
                             <table
-                                className="newDisptable"
                                 style={{borderStyle:"solid",borderWidth:"1px"}}
+                                className="newRectable"
                             >
                                 <tr>
-                                    <th colSpan={4 + this.props.gas.length}>Filled / Dispatch</th>
+                                    <th colSpan={4 + this.props.gas.length}>Empty / Receive</th>
                                 </tr>
                                 <tr>
-                                    <th>Party Name</th>
-                                    <th>Challan Number</th>
+                                    <th>Supplier Name</th>
+                                    <th>ER Number</th>
                                     <th>Location</th>
                                     <th colSpan={this.props.gas.length}>Cylinder Quantity</th>
                                     <th>Action</th>
@@ -316,14 +323,14 @@ class NewDispatch extends React.Component{
                                             style={{width:"6rem",padding:"0.5rem 0.5rem 1.5rem 0.5rem", border:"none"}}
                                             type="text"
                                             placeholder="Enter Party Name"
-                                            value={this.state.currentParty}
-                                            name="currentParty"
+                                            value={this.state.currentSupplier}
+                                            name="currentSupplier"
                                             onChange={this.handleChange}
-                                            list="partyNames"
+                                            list="supplierList"
                                         >
                                         </input>
-                                        <datalist id="partyNames">
-                                            {this.state.partyNamesDL}
+                                        <datalist id="supplierList">
+                                            {this.state.supplierList}
                                         </datalist>
                                     </td>
                                     <td>
@@ -331,8 +338,8 @@ class NewDispatch extends React.Component{
                                             style={{width:"6rem",padding:"0.5rem 0.5rem 1.5rem 0.5rem", border:"none"}}
                                             type="number"
                                             placeholder="Enter Challan Number"
-                                            value={this.state.currentChallan}
-                                            name="currentChallan"
+                                            value={this.state.currentER}
+                                            name="currentER"
                                             onChange={this.handleChange}
                                         >
                                         </input>
@@ -353,9 +360,7 @@ class NewDispatch extends React.Component{
                                         </select>
                                     </td>
                                     {
-                                        this.state.data ?
-                                            this.createGas()
-                                        : <></>
+                                        this.createGas()
                                     }
                                     <td>
                                         <Button onClick={this.handleSubmit} className="m-2">
@@ -369,7 +374,7 @@ class NewDispatch extends React.Component{
                                         return(
                                             <tr>
                                                 <td>{item.partyName}</td>
-                                                <td>{item.challanNumber}</td>
+                                                <td>{item.erNumber}</td>
                                                 <td>{item.soldFrom}</td>
                                                 {item.cylinders.map( gas =>{
                                                     return(
@@ -380,7 +385,7 @@ class NewDispatch extends React.Component{
                                                     <Button
                                                         className="m-2"
                                                         variant="outline-danger"
-                                                        onClick= {()=>{this.handleRemove(item.challanNumber)}}
+                                                        onClick= {()=>{this.handleRemove(item.erNumber)}}
                                                     >
                                                         Remove
                                                     </Button>
@@ -403,7 +408,7 @@ class NewDispatch extends React.Component{
                                     </>
                                 :<></>}
                             </table>
-                            <Button onClick={this.handleUpload} disabled={this.state.clicked} className="button mt-4">
+                            <Button onClick={this.handleUpload} disabled={this.state.clicked}  className="button mt-4">
                                 Upload
                             </Button>
                         </Col>
@@ -414,4 +419,4 @@ class NewDispatch extends React.Component{
     }
 }
 
-export default withRouter(NewDispatch)
+export default withRouter(ReceiveSupplier)

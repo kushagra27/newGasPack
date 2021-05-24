@@ -1,11 +1,12 @@
 import React from 'react'
-import { Container, Row, Col, Tabs, Tab, Card, Spinner, Button, InputGroup, ThemeProvider } from "react-bootstrap";
+import { Container, Row, Col, Tabs, Tab, Card, Spinner, Modal, InputGroup, ThemeProvider } from "react-bootstrap";
 import Sidebar from "./Sidebar";
 import db from "./Firestore";
 import NavbarLg from "./NavbarLg";
 import { withRouter } from 'react-router';
 import DatePicker from "react-date-picker";
 import _ from "lodash";
+import PartyHistory from './PartyHistory'
 
 class AllPartyRegister extends React.Component{
     constructor(props){
@@ -22,7 +23,8 @@ class AllPartyRegister extends React.Component{
                 SHOP:{},
                 CBJ:{}
             },
-            srNo:1
+            srNo:1,
+            modalShow: false
         }
     }
 
@@ -44,15 +46,15 @@ class AllPartyRegister extends React.Component{
             var show = Object.keys(obj).map( name =>{
                 sno+=1
                 return(
-                <tr>
-                    <td>{sno}</td>
-                    <td>{obj[name].partyName}</td>
-                    {
-                        obj[name].balance.map(balItem =>{
-                            return(<td>{balItem.quantity}</td>)
-                        })
-                    }
-                </tr>
+                    <tr onClick={()=>{this.handleShow(obj[name].partyName)}} >
+                        <td>{sno}</td>
+                        <td>{obj[name].partyName}</td>
+                        {
+                            obj[name].balance.map(balItem =>{
+                                return(<td>{balItem.quantity}</td>)
+                            })
+                        }
+                    </tr>
                 )
             })
 
@@ -62,7 +64,7 @@ class AllPartyRegister extends React.Component{
             console.log("Error getting documents: ", error);
         });
     }
-
+ 
     handleDate = date => {
         // console.log(date)
         const a = date.getDate()
@@ -73,15 +75,13 @@ class AllPartyRegister extends React.Component{
         return e
     }
 
+    handleShow = (name) =>{
+        this.setState({name, modalShow: true})
+    }
 
     handleChange = (e)=>{
         const {name, value} = e.target
         this.setState({[name]: value})
-    }
-
-    setShow = ()=>{
-        
-        // this.setState({show, loading: false})
     }
 
     render(){
@@ -114,20 +114,26 @@ class AllPartyRegister extends React.Component{
                                             return(<th colSpan={1}>{item.gas}</th>)
                                         })}
                                     </tr>
-                                    <tr>
-                                        <th></th>
-                                        <th></th>
-                                        {/* {this.props.gas.map(item =>{
-                                            return(<>
-                                                <th>B</th>
-                                            </>)
-                                        })} */}
-                                    </tr>
                                 </thead>
                                 <tbody>
                                     {this.state.show.length > 0?this.state.show:[]}
                                 </tbody>
                             </table>
+                            <Modal
+                                size="lg"
+                                show={this.state.modalShow}
+                                onHide={() => this.setState({modalShow: false})}
+                                aria-labelledby="example-modal-sizes-title-lg"
+                            >
+                                <Modal.Header closeButton>
+                                <Modal.Title id="example-modal-sizes-title-lg">
+                                    Party History
+                                </Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    <PartyHistory gas={this.props.gas} partyNames={this.props.partyNames} pn={this.state.name} />
+                                </Modal.Body>
+                            </Modal>
                         </Col>
                     </Row>
                 </Container>
