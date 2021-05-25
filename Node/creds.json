@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "gaspack-lite-62595",
+  "private_key_id": "305d7af1e3b5311ecfeee6d1efc646291b461411",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC8WRPlbZtACiPB\nk/2uUs5mqRAY9VJz3y9a62dN7RwM21yxnwIaBa6J7jyIL3N4N8q4SpN5tl9shOoJ\njJ2obSKQnvGXKiKt50jY6+fo0z6ZhXVMj8j+BqPpoMXPzFu+wjK1GmLNK7ZhvTcw\nRejWMrljNIb5yeBb1OPoaCU5tdhvsULbXhFXPZpEQudfR99/AHXqy4sM0ABmVpuu\nPqzJlJ25bsVMfxex6qdPCQoz2fK3UpLZ+xQvDqZD17P37x5rusFnGhs2TWWzt4Zt\nnt7hzlgJbGuCa98n0r+zVD22nZIc8V1kbMl7nX5T0F5mc3k09NLBsm+RbgtOTPFc\nr5Ad0yUbAgMBAAECggEAE0IUa7gKUMD4qPllzeY/nnWY5MRoutpOMECznl8pKBNh\n5fN5NonwL8BBRjd72gXyX2eYrrA8D4+DkphjIm6OQzVNRISVaSyl4TA11TOMSgxA\nUyS8i2TIa8H5l+awVs/qeWQKSCo5CsNbGj97sDMdi4w6ZN4EZ79b0k6bx8vVJo5P\ndQoOHECrqEw6wKAml7TnWpkLeVx4MfaKQSKGDKw2JViA9DrDhiN+OnsBOPZzT0ck\nhddGiBW/nCOkfOxDOLmOxTFoik1ebVWRK9hJ//Uo3gykR6iu325tz6cx8X6ZnyIj\ntltuJwncjfOvN8P9TYlZ5uAOSZFvrgPxjnTVpHs0aQKBgQDj/tLoDxIHBCfh9pOq\nu9u6B3e6qEbMpj5lMVvRDNSlTN1qtB8Zxrh9+vFSUxP1GeSARvihG0O88LK95B7E\nRXHIR95BuyuWzqcMqk9b6qPgqL6gqCyGlU+u9GSSIiT3rv3h1vIg+APiXK0WAq1G\nh98k8ct28gk3rFNFOHMl0p/I7QKBgQDTe5BtdoTl2Niyx+j+ojtFg+FkfcCTW0lL\ns/vWE2KIPPEUbRAx1zcJlSTVVX8wjN7k9c+WNeW95FhlpcKEXVgou5fG2U56ZokQ\nYfN8YpZb5sqCN3b84VBSfZH5GzF231j01DniX8PNGhWtCcJpyIcgOOLqWVbzDoZt\n+DX+R/WNJwKBgC77dvitClj5yUIuLrXTKm9GVKzZOmW3qEnwBuyoSTWbBlGTtoj4\nQ1JqoMoHJqiuYkDw3xFL7gSEUUECPjjR2qWb8bf32v6jrRbWDa5yRrzn6QhwP2So\nZhg2cncOpDGKFPUx9wlGMn61/FD50j0jiJ8zWGs1ayLW1v3/qPLVWWntAoGBAM2T\n0QrHalrwV347HH/iflGN6J1CLOBRncdsV4N7Zo3fB87+Uf7RIZw8EgkbSj+MwOO7\nG6b+D61u+osc/iCjiJ5X9SuEdGhBoj19qi4gu97sU7EPb6hU8jqt/Cc2SvguFxAv\n+XDX/MM09xs1YHpqRwiIo/SBEifF1+GwpfPgSY+DAoGASwNLoqBCIsZxjH4f55B3\nTYGzjEmwwSp2fowrhu/B9eEjBKvHu+AL6QOtVkWKr+z6pR0ZzneYLOHg52akooGH\nNZy6GJFElfxZwwQZdB6AJ5mFV4BhHp4QklCyoMthZy8isY39hP2I9iCKd3zXUSEL\nVCAcG6u3QMCtFHthRncLCqg=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-dh6im@gaspack-lite-62595.iam.gserviceaccount.com",
+  "client_id": "110741461572770685803",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-dh6im%40gaspack-lite-62595.iam.gserviceaccount.com"
+}

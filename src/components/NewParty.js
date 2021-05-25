@@ -42,7 +42,6 @@ handleChange = (e)=> {
     var obj = {
       partyName: this.state.partyName,
       contactPerson: this.state.contactPerson,
-      contactPerson: this.state.contactPerson,
       contactPersonSO: this.state.contactPersonSO,
       partyContact: this.state.partyContact,
       partyCity: this.state.partyCity,
