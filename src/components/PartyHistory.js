@@ -137,7 +137,7 @@ class PartyHistory extends React.Component{
     render(){
         return(
             this.state.loading?
-            <Spinner animation="border">
+            <Spinner animation="border" className="spinner">
 
             </Spinner>
             :
@@ -171,7 +171,7 @@ class PartyHistory extends React.Component{
                                 </Button>
                             </div>
                             
-                            <table>
+                            <table className="table-hover">
                                 <thead>
                                     <tr>
                                         <th colSpan={3 + (this.props.gas.length*3)}>Party Name</th>

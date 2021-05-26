@@ -86,9 +86,9 @@ class AllPartyRegister extends React.Component{
 
     render(){
         return(
-            this.state.loading?
-            <Spinner animation="border">
-
+            this.state.loading? 
+            <Spinner animation="border" className="spinner">
+                  
             </Spinner>
             :
             <>
@@ -104,7 +104,7 @@ class AllPartyRegister extends React.Component{
                             className="d-flex justify-content-center mt-5"
                             
                         >
-                            <table >
+                            <table className="table-hover">
                                 <thead >
                                     <tr>
                                         <th colSpan={3 + (this.props.gas.length*3)}>Party Name</th>
