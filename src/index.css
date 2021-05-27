@@ -20,6 +20,7 @@ body {
   color: white;
 }
 .sidebar {
+  position: sticky;
   min-height: 100vh !important;
   z-index: 100;
   background-color: #252525 !important;
@@ -193,10 +194,6 @@ a:hover{
   box-shadow: none;
   border: solid #80ffdb 1px;
 }
-tr:hover{
-  background-color: #252525;
-  color: #80ffdb;
-}
 .modal {
   padding: 0 !important; 
 }
@@ -213,4 +210,9 @@ tr:hover{
 }
 .modal .modal-body {
   overflow-y: auto;
+}
+.spinner{
+  position: absolute; 
+  left: 50%;
+  top:50%;
 }

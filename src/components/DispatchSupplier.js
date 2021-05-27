@@ -286,7 +286,7 @@ class DispatchSupplier extends React.Component{
     render(){
         return(
             this.state.loading?
-            <Spinner animation="border">
+            <Spinner animation="border" className="spinner">
 
             </Spinner>
             :
