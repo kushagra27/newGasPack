@@ -9,7 +9,7 @@ import _ from "lodash";
 import EditChallan from './EditChallan'
 import EditER from './EditER'
 
-class PartyHistory extends React.Component{
+class PartyRegister extends React.Component{
     constructor(props){
         super(props)
         this.state = {
@@ -225,4 +225,4 @@ class PartyHistory extends React.Component{
         )
     }
 }
-export default withRouter(PartyHistory)
+export default withRouter(PartyRegister)

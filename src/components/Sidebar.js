@@ -54,7 +54,7 @@ const Sidebar = () => {
         </Nav.Item>
         <hr />
         <Nav.Item>
-          <Link to="/partyHistory">Party History</Link>
+          <Link to="/partyRegister">Party Register</Link>
         </Nav.Item>
         <hr />
         <Nav.Item>

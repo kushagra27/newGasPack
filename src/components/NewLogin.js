@@ -3,20 +3,22 @@ import {React, useContext, useState, useEffect} from "react";
 import { Container, Card, Row, Col } from "react-bootstrap";
 import {signInWithGoogle} from '../components/Firestore'
 import {UserContext} from './UserProvider'
-import {Redirect} from 'react-router-dom'
+import {Redirect, withRouter} from 'react-router-dom'
 
-const NewLogin = () => {
+const NewLogin = (props) => {
+  console.log(props)
   const user = useContext(UserContext)
   const [redirect, setredirect] = useState(null)
 
+
+
   useEffect(() => {
+    console.log(user)
     if (user) {
-      setredirect('/NewParty')
+      console.log('hi')
+      props.history.push('/newParty')
     }
   }, [user])
-  if (redirect) {
-    <Redirect to={redirect}/>
-  }
   return (
     <>
       <Container fluid className="d-flex justify-content-center">
@@ -31,7 +33,7 @@ const NewLogin = () => {
                   the bulk of the card's content.
                 </Card.Text>
                 <div className="d-flex justify-content-center mt-5">
-                  <button class="googlebtn" onClick={signInWithGoogle}>
+                  <button class="googlebtn" onClick={signInWithGoogle} >
                   <img
                     class="google-icon-svg mr-3"
                     src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
@@ -39,7 +41,6 @@ const NewLogin = () => {
                   Login
                 </button>
                 </div>
-                
               </Card.Body>
             </Col>
           </Row>
@@ -49,4 +50,4 @@ const NewLogin = () => {
   );
 };
 
-export default NewLogin;
+export default withRouter(NewLogin);

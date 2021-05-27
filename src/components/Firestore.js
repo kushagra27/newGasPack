@@ -19,15 +19,17 @@ var db = firebase.firestore();
 export const auth = firebase.auth();
 const googleProvider = new firebase.auth.GoogleAuthProvider();
 export const signInWithGoogle = () => {
-  auth
+    auth
     .signInWithPopup(googleProvider)
     .then((res) => {
       console.log(res.user);
+      return res.user
     })
     .catch((error) => {
       console.log(error.message);
     });
 };
+
 export const logOut = () => {
   auth
     .signOut()

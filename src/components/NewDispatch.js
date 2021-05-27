@@ -55,7 +55,7 @@ class NewDispatch extends React.Component{
 
     handleSubmit = (e)=>{
         e.preventDefault()
-        if( !(this.state.currentParty && this.state.currentChallan && (this.state.currentO2 || this.state.currentCO2 || this.state.currentN2 || this.state.currentDA || this.state.currentN20 || this.state.currentH2 || this.state.currentAMM || this.state.currentARG || this.state.currentAIR))){
+        if( !(this.state.currentParty && this.state.currentLocation && this.state.currentChallan && (this.state.currentO2 || this.state.currentCO2 || this.state.currentN2 || this.state.currentDA || this.state.currentN20 || this.state.currentH2 || this.state.currentAMM || this.state.currentARG || this.state.currentAIR))){
             alert('cannot be empty')
             return
         }
@@ -202,14 +202,14 @@ class NewDispatch extends React.Component{
             let operationCounter2 = 0;
             let batchIndex2 = 0;
 
-            await this.state.data.forEach(doc => {
+            await this.state.data.forEach(async doc => {
                 var obj = {
                     dispatchRef: db.collection('parties').doc(doc.partyName).collection('dispatch').doc(doc.challanNumber),
                     docRef: db.collection('parties').doc(doc.partyName),
                     dispatchItem: doc,
                     docBalance: doc.cylinders
                 }
-                this.tns(obj)
+                await this.tns(obj)
                 var challanRef = db.collection('challans').doc(doc.challanNumber)
     
                 // update document data here...
@@ -227,10 +227,22 @@ class NewDispatch extends React.Component{
             await this.updateStock()
 
             alert('Click Ok to continue')
+            this.setZero()
             this.setState({data:[], clicked: false})
         } catch(err){
             console.error(`updateWorkers() errored out : ${err.stack}`);
         }
+    }
+
+    setZero = () =>{
+        const total = this.props.gas.map( item =>{
+            var obj = {
+                gas: item.gas,
+                quantity: 0
+            }
+            return obj
+        })
+        this.setState({total})
     }
 
     updateStock = ()=>{

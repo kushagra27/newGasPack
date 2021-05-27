@@ -6,7 +6,7 @@ import NavbarLg from "./NavbarLg";
 import { withRouter } from 'react-router';
 import DatePicker from "react-date-picker";
 import _ from "lodash";
-import PartyHistory from './PartyHistory'
+import PartyRegister from './PartyRegister'
 
 class AllPartyRegister extends React.Component{
     constructor(props){
@@ -133,7 +133,7 @@ class AllPartyRegister extends React.Component{
                                 </Modal.Title>
                                 </Modal.Header>
                                 <Modal.Body>
-                                    <PartyHistory gas={this.props.gas} partyNames={this.props.partyNames} pn={this.state.name} />
+                                    <PartyRegister gas={this.props.gas} partyNames={this.props.partyNames} pn={this.state.name} />
                                 </Modal.Body>
                             </Modal>
                         </Col>

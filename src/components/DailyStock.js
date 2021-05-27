@@ -127,7 +127,13 @@ class DailyStock extends React.Component{
             }) 
             : []
 
-            var total = this.state.total
+            var total = this.props.gas.map( item =>{
+                var obj = {
+                    gas: item.gas,
+                    quantity: 0
+                }
+                return obj
+            })
 
             if(this.state.displayData[loc]["filled"]){
                 this.state.displayData[loc]["filled"]["challans"].map( item =>{
@@ -182,6 +188,45 @@ class DailyStock extends React.Component{
                 }) 
         else
             comp = []
+
+            var total = this.props.gas.map( item =>{
+                var obj = {
+                    gas: item.gas,
+                    quantity: 0
+                }
+                return obj
+            })
+
+            if(this.state.displayData[loc]["empty"]){
+                this.state.displayData[loc]["empty"]["er"].map( item =>{
+                    item.cylinders.map(item =>{
+                        total.map(totItem =>{
+                            if(totItem.gas === item.gas){
+                                totItem.quantity += parseInt(item.quantity)
+                            }
+                        })
+                    })
+                })
+    
+                console.log(total)
+    
+                const arr = [
+                    <tr>
+                        <th>Total</th>
+                        <th></th>
+                        <th></th>
+                        {
+                            total.map(item =>{
+                                return(
+                                    <th>{item.quantity}</th>
+                                )
+                            })
+                        }
+                    </tr>
+                ]
+                comp.push(arr)
+            }
+
         console.log(comp)
         return comp
     }
@@ -307,7 +352,6 @@ class DailyStock extends React.Component{
                                     </tr>
                                     </>
                                     :<></>} */}
-                            
                                 </Tab>
                                 <Tab eventKey="cbj" title="CBJ" >
                                     <Tabs defaultActiveKey="location" id="uncontrolled">

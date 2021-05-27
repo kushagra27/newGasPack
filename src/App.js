@@ -3,7 +3,7 @@ import NewParty from "./components/NewParty";
 import NewDispatch from "./components/NewDispatch";
 import NewReceive from "./components/NewReceive";
 import DailyStock from "./components/DailyStock";
-import PartyHistory from "./components/PartyHistory";
+import PartyRegister from "./components/PartyRegister";
 import GasRegister from "./components/GasRegister";
 import AllPartyRegister from "./components/AllPartyRegister";
 import EditChallan from "./components/EditChallan";
@@ -76,7 +76,7 @@ class App extends React.Component {
           <Route exact path='/newReceive' component={()=><NewReceive gas={this.state.gas} partyNames={this.state.partyNames} />} />
           <Route exact path='/receiveSupplier' component={()=><ReceiveSupplier gas={this.state.gas} partyNames={this.state.partyNames} />} />
           <Route exact path='/dailyStock' component={()=><DailyStock gas={this.state.gas} partyNames={this.state.partyNames} />} />
-          <Route exact path='/partyHistory' component={()=><PartyHistory gas={this.state.gas} partyNames={this.state.partyNames} />} />
+          <Route exact path='/partyRegister' component={()=><PartyRegister gas={this.state.gas} partyNames={this.state.partyNames} />} />
           <Route exact path='/gasRegister' component={()=><GasRegister gas={this.state.gas} partyNames={this.state.partyNames} />} />
           <Route exact path='/allPartyRegister' component={()=><AllPartyRegister gas={this.state.gas} partyNames={this.state.partyNames} />} />
           <Route exact path='/editChallan' component={()=><EditChallan gas={this.state.gas} partyNames={this.state.partyNames} />} />

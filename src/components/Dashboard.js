@@ -4,13 +4,14 @@ import { withRouter } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import NewLogin from "./NewLogin";
 
-const Dashboard = () => {
+const Dashboard = (props) => {
+  console.log(props)
+  // props.history.push('/newParty')
   return (
     <>
       <Container fluid>
         <Row>
           <Sidebar />
-
           <Col lg={10} id="page-content-wrapper" className="mt-3">
             <NewLogin />
           </Col>

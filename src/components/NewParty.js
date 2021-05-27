@@ -40,21 +40,20 @@ handleChange = (e)=> {
       return obj
     })
     var obj = {
-      partyName: this.state.partyName,
-      contactPerson: this.state.contactPerson,
-      contactPersonSO: this.state.contactPersonSO,
-      partyContact: this.state.partyContact,
-      partyCity: this.state.partyCity,
-      partyVillage: this.state.partyVillage,
-      partyAddress: this.state.partyAddress,
+      partyName: this.state.partyName.replace(/[&\/\\#, +()$~%.'":*?<>{}]/g, '_'),
+      contactPerson: this.state.contactPerson?this.state.contactPerson:'',
+      contactPersonSO: this.state.contactPersonSO?this.state.contactPersonSO:'',
+      partyContact: this.state.partyContact?this.state.partyContact:'',
+      partyCity: this.state.partyCity?this.state.partyCity:'',
+      partyVillage: this.state.partyVillage?this.state.partyVillage:'',
+      partyAddress: this.state.partyAddress?this.state.partyAddress:'',
       balance: cylinders,
     }
-    db.collection("parties")
-      .doc(`${this.state.partyName}`)
-      .set(obj)
+    
+    db.collection("parties").doc(`${obj.partyName}`).set(obj)
       .then(() => {
 
-        db.collection("parties").doc(`${this.state.partyName}`).collection('dispatch').doc("OB").set({challanNumber:"OB", cylinders, dateSold: new Date()})
+        db.collection("parties").doc(`${obj.partyName}`).collection('dispatch').doc("OB").set({challanNumber:"OB", cylinders, dateSold: new Date()})
           .then(() => {
             console.log("Document successfully written!");
             alert('Successfully Added')
@@ -109,7 +108,7 @@ handleChange = (e)=> {
                             value={this.state.contactPerson}
                             name="contactPerson"
                             onChange={this.handleInputChange}
-                            required
+                            
                           />
                           <Form.Text className="text-muted">
                             Name of the person in contact
@@ -124,7 +123,7 @@ handleChange = (e)=> {
                             value={this.state.contactPersonSO}
                             name="contactPersonSO"
                             onChange={this.handleInputChange}
-                            required
+                            
                           />
                           <Form.Text className="text-muted">Father's name</Form.Text>
                         </Form.Group>
@@ -139,7 +138,7 @@ handleChange = (e)=> {
                             value={this.state.partyContact}
                             name="partyContact"
                             onChange={this.handleInputChange}
-                            required
+                            
                           />
                           <Form.Text className="text-muted">
                             Contact number of person
@@ -154,7 +153,7 @@ handleChange = (e)=> {
                             value={this.state.partyVillage}
                             name="partyVillage"
                             onChange={this.handleInputChange}
-                            required
+                            
                           />
                           <Form.Text className="text-muted">
                             Village of Party
@@ -168,7 +167,7 @@ handleChange = (e)=> {
                             value={this.state.partyCity}
                             name="partyCity"
                             onChange={this.handleInputChange}
-                            required
+                            
                           />
                           <Form.Text className="text-muted">
                             City of Party
@@ -186,7 +185,7 @@ handleChange = (e)=> {
                         value={this.state.partyAddress}
                         name="partyAddress"
                         onChange={this.handleInputChange}
-                        required
+                        
                       />
                       <Form.Text className="text-muted">
                         Address of Party

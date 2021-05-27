@@ -63,7 +63,7 @@ class DispatchSupplier extends React.Component{
 
     handleSubmit = (e)=>{
         e.preventDefault()
-        if( !(this.state.currentSupplier && this.state.currentChallan && (this.state.currentO2 || this.state.currentCO2 || this.state.currentN2 || this.state.currentDA || this.state.currentN20 || this.state.currentH2 || this.state.currentAMM || this.state.currentARG || this.state.currentAIR))){
+        if( !(this.state.currentSupplier && this.state.currentLocation && this.state.currentChallan && (this.state.currentO2 || this.state.currentCO2 || this.state.currentN2 || this.state.currentDA || this.state.currentN20 || this.state.currentH2 || this.state.currentAMM || this.state.currentARG || this.state.currentAIR))){
             alert('cannot be empty')
             return
         }
@@ -233,12 +233,23 @@ class DispatchSupplier extends React.Component{
             await batchArray2.forEach(async batch => await batch.commit());
 
             await this.updateStock()
-
             alert('Click Ok to continue')
+            this.setZero()
             this.setState({data:[], clicked: false})
         } catch(err){
             console.error(`updateWorkers() errored out : ${err.stack}`);
         }
+    }
+
+    setZero = ()=>{
+        const total = this.props.gas.map( item =>{
+            var obj = {
+                gas: item.gas,
+                quantity: 0
+            }
+            return obj
+        })
+        this.setState({total})
     }
 
     updateStock = ()=>{
