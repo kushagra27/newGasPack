@@ -32,49 +32,59 @@ const gas = [
 ]
 
 const updateDB = async () =>{
-    fs.readFile('contactJSON.json', (err, data) => {
-        if (err) throw err;
-        let parties = JSON.parse(data);
-        var cylinders = gas.map( item =>{
-            var obj = {
-                gas: item.gas,
-                quantity: 0
-            }
-            return obj
-          })
-        const batchArray = [];
-        batchArray.push(db.batch());
-        let operationCounter = 0;
-        let batchIndex = 0;
-
-
-
-        parties.map( item =>{
-            item.Name = item.Name.replace(/\s+/g,' ').trim()
-            item.Name = item.Name.replace(/[&\/\\#, +()$~%.'":*?<>{}]/g, '_')
-            var obj = {
-                partyName: item.Name,
-                contactPerson: item.ContactPerson,
-                partyContact: item.MobileNo.toString(),
-                balance: cylinders,
-                contactPersonSO: '',
-                partyCity: '',
-                partyVillage: '',
-                partyAddress: '',
-            }
-            var docRef = db.collection('parties').doc(obj.partyName)
-            batchArray[batchIndex].set(docRef, obj);
-            operationCounter++;
+    try{
+        fs.readFile('csvjson.json', (err, data) => {
+            if (err) throw err;
+            let parties = JSON.parse(data);
+            var cylinders = gas.map( item =>{
+                var obj = {
+                    gas: item.gas,
+                    quantity: 0
+                }
+                return obj
+              })
+            const batchArray = [];
+            batchArray.push(db.batch());
+            let operationCounter = 0;
+            let batchIndex = 0;
     
-            if (operationCounter === 499) {
-                batchArray.push(db.batch());
-                batchIndex++;
-                operationCounter = 0;
-            }
-            console.log(obj)
+    
+    
+            parties.map( async item =>{
+                item.Name = item.Name.replace(/\s+/g,' ').trim()
+                item.Name = item.Name.replace(/[&\/\\#, +()$~%.'":*?<>{}]/g, '_')
+                var obj = {
+                    partyName: item.Name,
+                    contactPerson: '',
+                    partyContact: '',
+                    balance: cylinders,
+                    contactPersonSO: '',
+                    partyCity: '',
+                    partyVillage: '',
+                    partyAddress: '',
+                }
+    
+                // await fs.appendFile('parties.json', JSON.stringify(obj), function (err) {
+                //     if (err) throw err;
+                //     console.log('!');
+                // });
+    
+                var docRef = db.collection('parties').doc(obj.partyName)
+                await batchArray[batchIndex].set(docRef, obj);
+                operationCounter++;
+        
+                if (operationCounter === 499) {
+                    batchArray.push(db.batch());
+                    batchIndex++;
+                    operationCounter = 0;
+                }
+                console.log(obj)
+            })
+            batchArray.forEach(async batch => await batch.commit())
         })
-        batchArray.forEach(async batch => await batch.commit())
-    })
+    } catch (err) {
+        console.log(err)
+    }
 }
 
 updateDB()
