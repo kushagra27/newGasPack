@@ -189,7 +189,7 @@ class NewDispatch extends React.Component{
         });
     }
 
-    handleUpload = async ()=>{
+    handleUpload = ()=>{
         this.setState({clicked: true})
         try{
             if(!this.state.selectedDate){
@@ -202,7 +202,7 @@ class NewDispatch extends React.Component{
             let operationCounter2 = 0;
             let batchIndex2 = 0;
 
-            await this.state.data.forEach(async doc => {
+            this.state.data.forEach(async doc => {
                 var obj = {
                     dispatchRef: db.collection('parties').doc(doc.partyName).collection('dispatch').doc(doc.challanNumber),
                     docRef: db.collection('parties').doc(doc.partyName),
@@ -213,18 +213,11 @@ class NewDispatch extends React.Component{
                 var challanRef = db.collection('challans').doc(doc.challanNumber)
     
                 // update document data here...
-                batchArray2[batchIndex2].set(challanRef, doc);
-                operationCounter2++;
-    
-                if (operationCounter2 === 499) {
-                batchArray2.push(db.batch());
-                batchIndex2++;
-                operationCounter2 = 0;
-                }
+                challanRef.set(doc);
             });
-            await batchArray2.forEach(async batch => await batch.commit());
-
-            await this.updateStock()
+            
+            this.updateStock()
+            // batchArray2.forEach(async batch => await batch.commit());
 
             alert('Click Ok to continue')
             this.setZero()

@@ -24,7 +24,8 @@ class AllPartyRegister extends React.Component{
                 CBJ:{}
             },
             srNo:1,
-            modalShow: false
+            modalShow: false,
+            hideLowBalances: true
         }
     }
 
@@ -43,7 +44,24 @@ class AllPartyRegister extends React.Component{
 
             console.log(obj)
             var sno = 0
+            var lowSno = 0
+            var lowBalanceHidden = []
             var show = Object.keys(obj).map( name =>{
+                if(_.find(obj[name].balance, function(o) { return o.quantity != 0; }))
+                {
+                        lowSno+=1
+                        lowBalanceHidden.push(
+                            <tr onClick={()=>{this.handleShow(obj[name].partyName)}} >
+                                <td>{lowSno}</td>
+                                <td>{obj[name].partyName}</td>
+                                {
+                                    obj[name].balance.map(balItem =>{
+                                        return(<td>{balItem.quantity}</td>)
+                                    })
+                                }
+                            </tr>
+                        )
+                }
                 sno+=1
                 return(
                     <tr onClick={()=>{this.handleShow(obj[name].partyName)}} >
@@ -57,8 +75,7 @@ class AllPartyRegister extends React.Component{
                     </tr>
                 )
             })
-
-            await this.setState({partyNamesDL, data: obj, show: show, loading: false})
+            await this.setState({partyNamesDL, data: obj, show: show, lowBalanceHidden, loading: false})
         })
         .catch((error) => {
             console.log("Error getting documents: ", error);
@@ -104,6 +121,18 @@ class AllPartyRegister extends React.Component{
                             className="d-flex justify-content-center mt-5"
                             
                         >
+                            <div className='custom-control custom-switch'>
+                                <input
+                                    type='checkbox'
+                                    className='custom-control-input'
+                                    id='customSwitchesChecked'
+                                    defaultChecked = {this.state.hideLowBalances}
+                                    onChange={()=>{this.setState({hideLowBalances: !this.state.hideLowBalances})}}
+                                />
+                                <label className='custom-control-label' htmlFor='customSwitchesChecked'>
+                                    Hide Low Balances
+                                </label>
+                            </div>
                             <table className="table-hover">
                                 <thead >
                                     <tr>
@@ -118,7 +147,12 @@ class AllPartyRegister extends React.Component{
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {this.state.show.length > 0?this.state.show:[]}
+                                    {
+                                        this.state.hideLowBalances
+                                        ?
+                                            this.state.lowBalanceHidden.length > 0?this.state.lowBalanceHidden:[]
+                                        :
+                                            this.state.show.length > 0?this.state.show:[]}
                                 </tbody>
                             </table>
                             <Modal
