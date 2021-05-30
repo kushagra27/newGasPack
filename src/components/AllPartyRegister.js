@@ -1,12 +1,23 @@
-import React from 'react'
-import { Container, Row, Col, Tabs, Tab, Card, Spinner, Modal, InputGroup, ThemeProvider } from "react-bootstrap";
+import React from "react";
+import {
+  Container,
+  Row,
+  Col,
+  Tabs,
+  Tab,
+  Card,
+  Spinner,
+  Modal,
+  InputGroup,
+  ThemeProvider,
+} from "react-bootstrap";
 import Sidebar from "./Sidebar";
 import db from "./Firestore";
 import NavbarLg from "./NavbarLg";
-import { withRouter } from 'react-router';
+import { withRouter } from "react-router";
 import DatePicker from "react-date-picker";
 import _ from "lodash";
-import PartyRegister from './PartyRegister'
+import PartyRegister from "./PartyRegister";
 
 class AllPartyRegister extends React.Component{
     constructor(props){
@@ -29,18 +40,19 @@ class AllPartyRegister extends React.Component{
         }
     }
 
-    componentDidMount = ()=>{
-        var partyNamesDL = this.props.partyNames.map(item =>{
-            return(<option value={item} >{item}</option>)
-        })
-        var obj={}
-        db.collection('parties').get()
-        .then(async (querySnapshot) => {
-            await querySnapshot.forEach((doc) => {
-                // doc.data() is never undefined for query doc snapshots
-                // console.log(doc.id, " => ", doc.data());
-                obj[doc.id] = doc.data()
-            });
+  componentDidMount = () => {
+    var partyNamesDL = this.props.partyNames.map((item) => {
+      return <option value={item}>{item}</option>;
+    });
+    var obj = {};
+    db.collection("parties")
+      .get()
+      .then(async (querySnapshot) => {
+        await querySnapshot.forEach((doc) => {
+          // doc.data() is never undefined for query doc snapshots
+          // console.log(doc.id, " => ", doc.data());
+          obj[doc.id] = doc.data();
+        });
 
             console.log(obj)
             var sno = 0
@@ -80,26 +92,26 @@ class AllPartyRegister extends React.Component{
         .catch((error) => {
             console.log("Error getting documents: ", error);
         });
-    }
- 
-    handleDate = date => {
-        // console.log(date)
-        const a = date.getDate()
-        const b = date.getFullYear()
-        const c = date.getMonth()+1
-        const e = a+"-"+c+'-'+b
-        
-        return e
-    }
+  };
 
-    handleShow = (name) =>{
-        this.setState({name, modalShow: true})
-    }
+  handleDate = (date) => {
+    // console.log(date)
+    const a = date.getDate();
+    const b = date.getFullYear();
+    const c = date.getMonth() + 1;
+    const e = a + "-" + c + "-" + b;
 
-    handleChange = (e)=>{
-        const {name, value} = e.target
-        this.setState({[name]: value})
-    }
+    return e;
+  };
+
+  handleShow = (name) => {
+    this.setState({ name, modalShow: true });
+  };
+
+  handleChange = (e) => {
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
+  };
 
     render(){
         return(
@@ -177,4 +189,4 @@ class AllPartyRegister extends React.Component{
         )
     }
 }
-export default withRouter(AllPartyRegister)
+export default withRouter(AllPartyRegister);

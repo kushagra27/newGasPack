@@ -11,8 +11,7 @@ const Dashboard = (props) => {
     <>
       <Container fluid>
         <Row>
-          <Sidebar />
-          <Col lg={10} id="page-content-wrapper" className="mt-3">
+          <Col lg={12} id="page-content-wrapper" className="mt-3">
             <NewLogin />
           </Col>
         </Row>
