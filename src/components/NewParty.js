@@ -78,9 +78,13 @@ handleChange = (e)=> {
             <Col
               lg={10}
               id="page-content-wrapper"
-              className="d-flex justify-content-center"
+              
             >
+            <div className="d-flex justify-content-center mt-3">
+                <h2>New Party</h2>
+              </div>
               <Card className="mt-3 card mb-3">
+              
                 <Card.Body>
                   <Form onSubmit={this.handleSubmit} className="form">
                     <Row>

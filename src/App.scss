@@ -40,3 +40,8 @@
     max-width: 100%;
   }
 }
+.stickyTop {
+  position: sticky;
+  top: 0;
+  position: -webkit-sticky;
+}
