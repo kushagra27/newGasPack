@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
 import Sidebar from "./Sidebar";
 import useForm from "./CustomHooks";
-import db from "./Firestore";
+import {db} from "./Firestore";
 import NavbarLg from "./NavbarLg";
 
 class NewParty extends React.Component {

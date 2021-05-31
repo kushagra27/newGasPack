@@ -12,7 +12,7 @@ import {
   ThemeProvider,
 } from "react-bootstrap";
 import Sidebar from "./Sidebar";
-import db from "./Firestore";
+import {db} from "./Firestore";
 import NavbarLg from "./NavbarLg";
 import { withRouter } from "react-router";
 import DatePicker from "react-date-picker";
@@ -151,7 +151,7 @@ class AllPartyRegister extends React.Component{
                         <Col
                             lg={10}
                             id="page-content-wrapper"
-                            className="d-flex justify-content-center mt-5"
+                            className="mt-5"
                             
                         >
                             <div className="d-flex justify-content-center mt-3">
@@ -175,7 +175,7 @@ class AllPartyRegister extends React.Component{
                                         <th colSpan={3 + (this.props.gas.length*3)}>Party Name</th>
                                     </tr>
                                     <tr>
-                                        <th>Sr. No</th>
+                                        <th style={{width:"20%"}}>Sr. No</th>
                                         <th>Party Name</th>
                                         {this.props.gas.map(item =>{
                                             return(<th colSpan={1}>{item.gas}</th>)

@@ -220,3 +220,6 @@ a:hover{
   left: 50%;
   top:50%;
 }
+th{
+  width: 100%;
+}

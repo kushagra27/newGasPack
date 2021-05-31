@@ -11,7 +11,7 @@ import {
   Modal,
 } from "react-bootstrap";
 import Sidebar from "./Sidebar";
-import db from "./Firestore";
+import {db} from "./Firestore";
 import NavbarLg from "./NavbarLg";
 import { withRouter } from "react-router";
 import DatePicker from "react-date-picker";

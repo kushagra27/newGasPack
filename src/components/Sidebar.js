@@ -26,9 +26,9 @@ const Sidebar = () => {
     >
       <Nav className="bg-dark sidebar " activeKey="/home">
         <div className="sidebar-sticky"></div>
-        <Nav.Item>
+        {/* <Nav.Item>
           <button className="ml-5 mb-3 btn-danger btn" onClick={logOut}>Logout</button>
-        </Nav.Item>
+        </Nav.Item> */}
         <Nav.Item>
           <Link to="/newParty">New Party</Link>
         </Nav.Item>

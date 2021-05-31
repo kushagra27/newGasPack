@@ -196,6 +196,7 @@ class SignIn extends React.Component{
                                                 onClick={this.state.signedIn?this.signOut:this.signIn}
                                                 style={{margin:"5px"}}
                                                 color={this.state.signedIn?"danger":"primary"}
+                                                className="button"
                                             >
                                                 {this.state.signedIn?"Sign Out":"Sign In"}
                                             </Button>
@@ -211,6 +212,7 @@ class SignIn extends React.Component{
                             onClick={this.state.signedIn?this.signOut:this.signIn}
                             style={{margin:"5px"}}
                             color={this.state.signedIn?"danger":"primary"}
+                            className="btn btn-danger d-flex"
                         >
                             {this.state.signedIn?"Sign Out":"Sign In"}
                         </Button>
@@ -224,12 +226,13 @@ class SignIn extends React.Component{
                                     {/* <CardImg top width="100%" style={{padding:"0.5em"}} src={img} alt="Gopinath Logo" /> */}
                                     <Card.Body >
                                         <h1><Card.Title style={{textAlign: "center"}}><strong>Gas Pack</strong></Card.Title></h1>
-                                        <Card.Text>Please Wait for the admin to authorize you</Card.Text>
+                                        <Card.Text style={{textAlign: "center"}}>Please Wait for the admin to authorize you</Card.Text>
                                         <Row style={{display:"flex",justifyContent:"center"}}>
                                             <Button
                                                 onClick={this.state.signedIn?this.signOut:this.signIn}
                                                 style={{margin:"5px"}}
                                                 color={this.state.signedIn?"danger":"primary"}
+                                                className="button"
                                             >
                                                 {this.state.signedIn?"Sign Out":"Sign In"}
                                             </Button>
