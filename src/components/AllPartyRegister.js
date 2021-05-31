@@ -54,6 +54,15 @@ class AllPartyRegister extends React.Component{
           obj[doc.id] = doc.data();
         });
 
+        var gasWiseTotal = this.props.gas.map((item) => {
+            var obj = {
+              gas: item.gas,
+              quantity: 0,
+            };
+            return obj;
+        });
+        
+
             console.log(obj)
             var sno = 0
             var lowSno = 0
@@ -91,6 +100,11 @@ class AllPartyRegister extends React.Component{
                         <td style={{textAlign:'left'}}>{obj[name].partyName}</td>
                         {
                             obj[name].balance.map(balItem =>{
+                                gasWiseTotal.map(gasItem =>{
+                                    if(gasItem.gas === balItem.gas){
+                                        gasItem.quantity += balItem.quantity
+                                    }
+                                })
                                 bal+=balItem.quantity
                                 if(balItem.quantity){
                                     return(<td><strong>{balItem.quantity}</strong></td>)
@@ -108,7 +122,7 @@ class AllPartyRegister extends React.Component{
                     </tr>
                 )
             })
-            await this.setState({partyNamesDL, data: obj, show: show, lowBalanceHidden, loading: false})
+            await this.setState({partyNamesDL, data: obj, show: show, lowBalanceHidden, gasWiseTotal,loading: false})
         })
         .catch((error) => {
             console.log("Error getting documents: ", error);
@@ -190,6 +204,17 @@ class AllPartyRegister extends React.Component{
                                             this.state.lowBalanceHidden.length > 0?this.state.lowBalanceHidden:[]
                                         :
                                             this.state.show.length > 0?this.state.show:[]}
+                                    {
+                                        this.state.show.length > 0? 
+                                        <tr>
+                                            <td colSpan={2}><strong>Total</strong></td>
+                                            {this.state.gasWiseTotal.map(gasItem =>{
+                                                return(<td><strong>{gasItem.quantity}</strong></td>)
+                                            })}
+                                            <td><strong>{_.sumBy(this.state.gasWiseTotal, 'quantity') }</strong></td>
+                                        </tr>
+                                        :[]
+                                    }
                                 </tbody>
                             </table>
                             <Modal
