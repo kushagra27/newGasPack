@@ -67,19 +67,19 @@ class Dashboard extends React.Component {
       <UserProvider>
           <div className="Dashboard">
         <Router>
-          <Route exact path='/' component={()=><NewParty gas={this.state.gas} />} />
-          <Route exact path='/newParty' component={()=><NewParty gas={this.state.gas} />} />
-          <Route exact path='/newDispatch' component={()=><NewDispatch gas={this.state.gas} partyNames={this.state.partyNames} />} />
-          <Route exact path='/dispatchSupplier' component={()=><DispatchSupplier gas={this.state.gas} partyNames={this.state.partyNames} />} />
-          <Route exact path='/newReceive' component={()=><NewReceive gas={this.state.gas} partyNames={this.state.partyNames} />} />
-          <Route exact path='/receiveSupplier' component={()=><ReceiveSupplier gas={this.state.gas} partyNames={this.state.partyNames} />} />
-          <Route exact path='/dailyStock' component={()=><DailyStock gas={this.state.gas} partyNames={this.state.partyNames} />} />
-          <Route exact path='/partyRegister' component={()=><PartyRegister gas={this.state.gas} partyNames={this.state.partyNames} />} />
-          <Route exact path='/gasRegister' component={()=><GasRegister gas={this.state.gas} partyNames={this.state.partyNames} />} />
-          <Route exact path='/allPartyRegister' component={()=><AllPartyRegister gas={this.state.gas} partyNames={this.state.partyNames} />} />
-          <Route exact path='/editChallan' component={()=><EditChallan gas={this.state.gas} partyNames={this.state.partyNames} />} />
-          <Route exact path='/editEr' component={()=><EditER gas={this.state.gas} partyNames={this.state.partyNames} />} />
-          <Route exact path='/test' component={()=><Test gas={this.state.gas} partyNames={this.state.partyNames} />} />
+          <Route exact path='/' component={()=><NewParty gas={this.state.gas} signOut={this.props.signOut} />} />
+          <Route exact path='/newParty' component={()=><NewParty gas={this.state.gas} signOut={this.props.signOut} />} />
+          <Route exact path='/newDispatch' component={()=><NewDispatch gas={this.state.gas} partyNames={this.state.partyNames} signOut={this.props.signOut} />} />
+          <Route exact path='/dispatchSupplier' component={()=><DispatchSupplier gas={this.state.gas} partyNames={this.state.partyNames} signOut={this.props.signOut} />} />
+          <Route exact path='/newReceive' component={()=><NewReceive gas={this.state.gas} partyNames={this.state.partyNames} signOut={this.props.signOut} />} />
+          <Route exact path='/receiveSupplier' component={()=><ReceiveSupplier gas={this.state.gas} partyNames={this.state.partyNames} signOut={this.props.signOut} />} />
+          <Route exact path='/dailyStock' component={()=><DailyStock gas={this.state.gas} partyNames={this.state.partyNames} signOut={this.props.signOut} />} />
+          <Route exact path='/partyRegister' component={()=><PartyRegister gas={this.state.gas} partyNames={this.state.partyNames} signOut={this.props.signOut} />} />
+          <Route exact path='/gasRegister' component={()=><GasRegister gas={this.state.gas} partyNames={this.state.partyNames} signOut={this.props.signOut} />} />
+          <Route exact path='/allPartyRegister' component={()=><AllPartyRegister gas={this.state.gas} partyNames={this.state.partyNames} signOut={this.props.signOut} />} />
+          <Route exact path='/editChallan' component={()=><EditChallan gas={this.state.gas} partyNames={this.state.partyNames} signOut={this.props.signOut} />} />
+          <Route exact path='/editEr' component={()=><EditER gas={this.state.gas} partyNames={this.state.partyNames} signOut={this.props.signOut} />} />
+          <Route exact path='/test' component={()=><Test gas={this.state.gas} partyNames={this.state.partyNames} signOut={this.props.signOut} />} />
           {/* <Route exact path='/contact' component={Contact} /> */}
         </Router>    
       </div>

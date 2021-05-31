@@ -186,7 +186,7 @@ class SignIn extends React.Component{
                     !this.state.loading && !this.state.signedIn?
                         <Container fluid={true} style={{display:"flex", overflow:"auto",clear:"both", justifyContent: "center",minHeight:"100vh", overflow:"scroll", alignItems: "center",backgroundRepeat: 'repeat'}}>
                             <div>
-                                <Card style={{margin:"2em", marginTop:"2em",maxWidth:"30vw", minHeight:"10em", overflow:"hidden", padding:"0.5em"}}>
+                                <Card className="cardLogin" style={{margin:"2em", marginTop:"2em",maxWidth:"30vw", minHeight:"10em", overflow:"hidden", padding:"0.5em"}}>
                                     {/* <CardImg top width="100%" style={{padding:"0.5em",maxWidth:"50vw"}} src={img} alt="Gopinath Logo" /> */}
                                     <Card.Body >
                                         <h1><Card.Title style={{textAlign: "center"}}><strong>Gas Pack</strong></Card.Title></h1>
@@ -208,21 +208,20 @@ class SignIn extends React.Component{
                         </Container>
                     : !this.state.loading && this.state.signedIn && this.state.authenticated?
                     <div>
-                        <Button
+                        <div className="back"><Button
                             onClick={this.state.signedIn?this.signOut:this.signIn}
-                            style={{margin:"5px"}}
                             color={this.state.signedIn?"danger":"primary"}
                             className="btn btn-danger d-flex"
                         >
                             {this.state.signedIn?"Sign Out":"Sign In"}
-                        </Button>
+                        </Button></div>
                         <Dashboard signOut={this.signOut} />
                     </div>
                     : !this.state.loading && this.state.signedIn && !this.state.authenticated?
                     <div>
                         <Container fluid={true} style={{display:"flex", overflow:"auto",clear:"both", justifyContent: "center",minHeight:"100vh", overflow:"scroll", alignItems: "center",backgroundRepeat: 'repeat'}}>
                             <div>
-                                <Card style={{margin:"2em", width:"30vw", marginTop:"2em",minHeight:"10em", overflow:"hidden", padding:"0.5em"}}>
+                                <Card className="cardLogin" style={{margin:"2em", width:"30vw", marginTop:"2em",minHeight:"10em", overflow:"hidden", padding:"0.5em"}}>
                                     {/* <CardImg top width="100%" style={{padding:"0.5em"}} src={img} alt="Gopinath Logo" /> */}
                                     <Card.Body >
                                         <h1><Card.Title style={{textAlign: "center"}}><strong>Gas Pack</strong></Card.Title></h1>
@@ -230,7 +229,7 @@ class SignIn extends React.Component{
                                         <Row style={{display:"flex",justifyContent:"center"}}>
                                             <Button
                                                 onClick={this.state.signedIn?this.signOut:this.signIn}
-                                                style={{margin:"5px"}}
+                                                style={{margin:"5px", postion:"absolute"}}
                                                 color={this.state.signedIn?"danger":"primary"}
                                                 className="button"
                                             >

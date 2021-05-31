@@ -123,7 +123,7 @@ hr {
   height: 1.5rem;
   user-select: none;
 }
-.btn:focus {
+.button:focus {
   outline: none !important;
   box-shadow: none;
   background-color: #80ffdb;
@@ -220,6 +220,13 @@ a:hover{
   left: 50%;
   top:50%;
 }
-th{
+.allpartyTable th{
   width: 100%;
+}
+.back{
+  text-align: center;
+  background-color: #252525;
+  /* max-width: 13.7rem; */
+  width: 100%;
+  padding: 1rem 1rem 0 1rem;
 }

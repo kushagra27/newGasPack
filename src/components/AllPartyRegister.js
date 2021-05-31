@@ -169,13 +169,13 @@ class AllPartyRegister extends React.Component{
                                     Hide Low Balances
                                 </label>
                             </div>
-                            <table className="table-hover">
+                            <table className="table-hover allpartyTable">
                                 <thead >
                                     <tr>
                                         <th colSpan={3 + (this.props.gas.length*3)}>Party Name</th>
                                     </tr>
                                     <tr>
-                                        <th style={{width:"20%"}}>Sr. No</th>
+                                        <th style={{width:"10%"}}>Sr. No</th>
                                         <th>Party Name</th>
                                         {this.props.gas.map(item =>{
                                             return(<th colSpan={1}>{item.gas}</th>)

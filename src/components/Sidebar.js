@@ -5,9 +5,10 @@ import { logOut } from "../components/Firestore";
 import { UserContext } from "./UserProvider";
 import { Redirect } from "react-router-dom";
 
-const Sidebar = () => {
+const Sidebar = (props) => {
   const user = useContext(UserContext);
   const [redirect, setredirect] = useState(null);
+  const signOutFucntion = props.signOut;
 
   useEffect(() => {
     if (!user) {
@@ -27,7 +28,12 @@ const Sidebar = () => {
       <Nav className="bg-dark sidebar " activeKey="/home">
         <div className="sidebar-sticky"></div>
         {/* <Nav.Item>
-          <button className="ml-5 mb-3 btn-danger btn" onClick={logOut}>Logout</button>
+          <button
+            className="ml-5 mb-3 btn-danger btn"
+            onClick={signOutFucntion}
+          >
+            Logout
+          </button>
         </Nav.Item> */}
         <Nav.Item>
           <Link to="/newParty">New Party</Link>
