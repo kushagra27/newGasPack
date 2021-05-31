@@ -78,7 +78,6 @@ handleChange = (e)=> {
             <Col
               lg={10}
               id="page-content-wrapper"
-              
             >
             <div className="d-flex justify-content-center mt-3">
                 <h2>New Party</h2>

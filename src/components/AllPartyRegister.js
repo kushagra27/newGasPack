@@ -58,31 +58,52 @@ class AllPartyRegister extends React.Component{
             var sno = 0
             var lowSno = 0
             var lowBalanceHidden = []
+            var lowBal = 0
+            var bal = 0
             var show = Object.keys(obj).map( name =>{
                 if(_.find(obj[name].balance, function(o) { return o.quantity != 0; }))
                 {
+                        lowBal = 0
                         lowSno+=1
                         lowBalanceHidden.push(
                             <tr onClick={()=>{this.handleShow(obj[name].partyName)}} >
                                 <td>{lowSno}</td>
-                                <td>{obj[name].partyName}</td>
+                                <td style={{textAlign:'left'}}>{obj[name].partyName}</td>
                                 {
                                     obj[name].balance.map(balItem =>{
-                                        return(<td>{balItem.quantity}</td>)
+                                        if(balItem.quantity){
+                                            lowBal+=balItem.quantity
+                                            return(<td><strong>{balItem.quantity}</strong></td>)
+                                        } else {
+                                            return(<td>{balItem.quantity}</td>)
+                                        }
                                     })
                                 }
+                                <td><strong>{lowBal}</strong></td>
                             </tr>
                         )
                 }
+                bal = 0
                 sno+=1
                 return(
                     <tr onClick={()=>{this.handleShow(obj[name].partyName)}} >
                         <td>{sno}</td>
-                        <td>{obj[name].partyName}</td>
+                        <td style={{textAlign:'left'}}>{obj[name].partyName}</td>
                         {
                             obj[name].balance.map(balItem =>{
-                                return(<td>{balItem.quantity}</td>)
+                                bal+=balItem.quantity
+                                if(balItem.quantity){
+                                    return(<td><strong>{balItem.quantity}</strong></td>)
+                                } else {
+                                    return(<td>{balItem.quantity}</td>)
+                                }
                             })
+                        }
+                        {
+                            bal?
+                                <td><strong>{bal}</strong></td>
+                            :
+                                <td>{bal}</td>
                         }
                     </tr>
                 )
@@ -133,6 +154,9 @@ class AllPartyRegister extends React.Component{
                             className="d-flex justify-content-center mt-5"
                             
                         >
+                            <div className="d-flex justify-content-center mt-3">
+                                <h2>All Party Register</h2>
+                            </div>
                             <div className='custom-control custom-switch'>
                                 <input
                                     type='checkbox'
@@ -156,6 +180,7 @@ class AllPartyRegister extends React.Component{
                                         {this.props.gas.map(item =>{
                                             return(<th colSpan={1}>{item.gas}</th>)
                                         })}
+                                        <th>Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>

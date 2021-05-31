@@ -120,7 +120,7 @@ class PartyRegister extends React.Component {
                     <td>{cylItem.quantity ? cylItem.quantity : "-"}</td>
                   );
                   arr.push(<td>{"-"}</td>);
-                  arr.push(<td>{d[cylItem.gas] ? d[cylItem.gas] : "-"}</td>);
+                  arr.push(<td><strong>{d[cylItem.gas] ? d[cylItem.gas] : "-"}</strong></td>);
                   // console.log(d)
                   // console.log(cylItem, item.challanNumber)
                 } else if (item.erNumber) {
@@ -129,7 +129,7 @@ class PartyRegister extends React.Component {
                   arr.push(
                     <td>{cylItem.quantity ? cylItem.quantity : "-"}</td>
                   );
-                  arr.push(<td>{d[cylItem.gas] ? d[cylItem.gas] : "-"}</td>);
+                  arr.push(<td><strong>{d[cylItem.gas] ? d[cylItem.gas] : "-"}</strong></td>);
                   // console.log(d)
                   // console.log(cylItem, item.erNumber)
                 }

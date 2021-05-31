@@ -15,7 +15,7 @@ const config = {
 
 firebase.initializeApp(config);
 
-var db = firebase.firestore();
+export const db = firebase.firestore();
 export const auth = firebase.auth();
 const googleProvider = new firebase.auth.GoogleAuthProvider();
 export const signInWithGoogle = () => {
@@ -40,4 +40,4 @@ export const logOut = () => {
       console.log(error.message);
     });
 };
-export default db;
+export default firebase;

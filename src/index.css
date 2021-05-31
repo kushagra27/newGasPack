@@ -148,6 +148,10 @@ table {
   overflow-x: auto;
   table-layout: fixed;
 }
+td{
+  text-align: right;
+  padding: 0.2rem
+}
 th {
   padding: 0.7rem;
 }
