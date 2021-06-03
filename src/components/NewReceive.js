@@ -141,7 +141,7 @@ class NewReceive extends React.Component {
   handleRemove = (erNumber) => {
     var data = this.state.data;
     var total = this.state.total;
-    var locationWiseEntry = [];
+    var locationWiseEntry = this.state.locationWiseEntry;
     var arr = [];
     console.log(locationWiseEntry);
     data.map((item) => {
@@ -152,9 +152,7 @@ class NewReceive extends React.Component {
               totItem.quantity -= parseInt(cylItem.quantity);
             }
           });
-          locationWiseEntry = this.state.locationWiseEntry[
-            item.soldFrom
-          ].filter((locItem) => locItem.erNumber !== erNumber);
+          locationWiseEntry[item.soldFrom] = this.state.locationWiseEntry[item.soldFrom].filter((locItem) => locItem.erNumber !== erNumber);
         });
       } else {
         arr.push(item);

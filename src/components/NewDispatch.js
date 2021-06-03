@@ -27,6 +27,7 @@ class NewDispatch extends React.Component {
       partyNamesDL: [],
       locationWiseEntry: {},
       clicked: false,
+      currentLocation: 'SHOP',
     };
   }
 
@@ -138,13 +139,13 @@ class NewDispatch extends React.Component {
       currentAIR: "",
       locationWiseEntry,
     });
-    console.log(entry);
+    console.log(locationWiseEntry);
   };
 
   handleRemove = (challanNumber) => {
     var data = this.state.data;
     var total = this.state.total;
-    var locationWiseEntry = [];
+    var locationWiseEntry = this.state.locationWiseEntry
     var arr = [];
     console.log(locationWiseEntry);
     data.map((item) => {
@@ -155,9 +156,7 @@ class NewDispatch extends React.Component {
               totItem.quantity -= parseInt(cylItem.quantity);
             }
           });
-          locationWiseEntry = this.state.locationWiseEntry[
-            item.soldFrom
-          ].filter((locItem) => locItem.challanNumber !== challanNumber);
+          locationWiseEntry[item.soldFrom] = this.state.locationWiseEntry[item.soldFrom].filter((locItem) => locItem.challanNumber !== challanNumber);
         });
       } else {
         arr.push(item);
@@ -279,12 +278,11 @@ class NewDispatch extends React.Component {
             if (!doc.exists) {
               challanRef
                 .set({ challans: this.state.locationWiseEntry[location] })
-                .then(() => {});
-              console.log("New Document created");
+                .then(() => {console.log("New Document Challans created")});
             } else if (!doc.data().challans) {
               challanRef
                 .update({ challans: this.state.locationWiseEntry[location] })
-                .then(() => {});
+                .then(() => {console.log("Document Challans Updated")});
             } else {
               console.log("in else");
               console.log(doc.data().challans);
