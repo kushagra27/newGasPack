@@ -230,3 +230,7 @@ a:hover{
   width: 100%;
   padding: 1rem 1rem 0 1rem;
 }
+
+.ReactTable .rt-thead {
+  overflow-y: scroll;
+}

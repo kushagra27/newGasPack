@@ -8,6 +8,7 @@ import {
   Card,
   Spinner,
 } from "react-bootstrap";
+import ReactDOM from 'react-dom';
 import Sidebar from "./Sidebar";
 import {db} from "./Firestore";
 import NavbarLg from "./NavbarLg";
@@ -140,6 +141,7 @@ class NewDispatch extends React.Component {
       locationWiseEntry,
     });
     console.log(locationWiseEntry);
+    ReactDOM.findDOMNode(this.myInputRef).focus();
   };
 
   handleRemove = (challanNumber) => {
@@ -359,6 +361,7 @@ class NewDispatch extends React.Component {
                         padding: "0.5rem 0.5rem 1.5rem 0.5rem",
                         border: "none",
                       }}
+                      ref={c => (this.myInputRef = c)}
                       type="text"
                       placeholder="Enter Party Name"
                       value={this.state.currentParty}

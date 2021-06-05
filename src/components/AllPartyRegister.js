@@ -18,6 +18,7 @@ import { withRouter } from "react-router";
 import DatePicker from "react-date-picker";
 import _ from "lodash";
 import PartyRegister from "./PartyRegister";
+import Table from "./Table";
 
 class AllPartyRegister extends React.Component{
     constructor(props){
@@ -52,7 +53,7 @@ class AllPartyRegister extends React.Component{
           // doc.data() is never undefined for query doc snapshots
           // console.log(doc.id, " => ", doc.data());
           obj[doc.id] = doc.data();
-        });
+        }); 
 
         var gasWiseTotal = this.props.gas.map((item) => {
             var obj = {
@@ -63,66 +64,56 @@ class AllPartyRegister extends React.Component{
         });
         
 
-            console.log(obj)
-            var sno = 0
-            var lowSno = 0
+            // console.log(data)
+            var sno = 1
+            var lowSno = 1
             var lowBalanceHidden = []
             var lowBal = 0
             var bal = 0
-            var show = Object.keys(obj).map( name =>{
-                if(_.find(obj[name].balance, function(o) { return o.quantity != 0; }))
-                {
-                        lowBal = 0
-                        lowSno+=1
-                        lowBalanceHidden.push(
-                            <tr onClick={()=>{this.handleShow(obj[name].partyName)}} >
-                                <td>{lowSno}</td>
-                                <td style={{textAlign:'left'}}>{obj[name].partyName}</td>
-                                {
-                                    obj[name].balance.map(balItem =>{
-                                        if(balItem.quantity){
-                                            lowBal+=balItem.quantity
-                                            return(<td><strong>{balItem.quantity}</strong></td>)
-                                        } else {
-                                            return(<td>{balItem.quantity}</td>)
-                                        }
-                                    })
-                                }
-                                <td><strong>{lowBal}</strong></td>
-                            </tr>
-                        )
+        
+            const data = _.toArray(obj).map( item =>{
+                if(_.find(item.balance, function(o) { return o.quantity != 0; })){
+                    lowBal = 0
+                    item.sno = lowSno++
+                    const gasObj = Object.assign({}, ...(item.balance).map(gas => { 
+                        return { [gas.gas]: gas.quantity } 
+                    }))
+                    
+                    item.balance.map(balItem => {
+                        lowBal+=balItem.quantity
+                    })
+                    item.total = lowBal
+                    lowBalanceHidden.push({...item, ...gasObj})
                 }
                 bal = 0
-                sno+=1
-                return(
-                    <tr onClick={()=>{this.handleShow(obj[name].partyName)}} >
-                        <td>{sno}</td>
-                        <td style={{textAlign:'left'}}>{obj[name].partyName}</td>
-                        {
-                            obj[name].balance.map(balItem =>{
-                                gasWiseTotal.map(gasItem =>{
-                                    if(gasItem.gas === balItem.gas){
-                                        gasItem.quantity += balItem.quantity
-                                    }
-                                })
-                                bal+=balItem.quantity
-                                if(balItem.quantity){
-                                    return(<td><strong>{balItem.quantity}</strong></td>)
-                                } else {
-                                    return(<td>{balItem.quantity}</td>)
-                                }
-                            })
+                item.sno = sno++
+                const gasObj = Object.assign({}, ...(item.balance).map(gas => { 
+                    return { [gas.gas]: gas.quantity } 
+                }))
+                
+                item.balance.map(balItem => {
+                    gasWiseTotal.map(gasItem =>{
+                        if(gasItem.gas === balItem.gas){
+                            gasItem.quantity += balItem.quantity
                         }
-                        {
-                            bal?
-                                <td><strong>{bal}</strong></td>
-                            :
-                                <td>{bal}</td>
-                        }
-                    </tr>
-                )
+                    })
+                    bal+=balItem.quantity
+                })
+                item.total = bal
+                return ({...item, ...gasObj})
             })
-            await this.setState({partyNamesDL, data: obj, show: show, lowBalanceHidden, gasWiseTotal,loading: false})
+
+            const footer = 
+            <tr>
+                <td colSpan={2}><strong>Total</strong></td>
+                {gasWiseTotal.map(gasItem =>{
+                    return(<td><strong>{gasItem.quantity}</strong></td>)
+                })}
+                <td><strong>{_.sumBy(gasWiseTotal, 'quantity') }</strong></td>
+            </tr>
+
+            await this.setState({partyNamesDL, lowBalanceHidden, data, loading: false, footer})
+            // await this.setState({partyNamesDL, data: obj, show: show, lowBalanceHidden, gasWiseTotal,loading: false})
         })
         .catch((error) => {
             console.log("Error getting documents: ", error);
@@ -149,6 +140,47 @@ class AllPartyRegister extends React.Component{
   };
 
     render(){
+        console.log(this.state.data.length)
+        const columns = [
+              {
+                Header: 'Party Name',
+                Footer: 'Total',
+                columns: [
+                    ...[
+                        {
+                            Header: 'Sr. No',
+                            Footer: 'Sr. No',
+                            accessor: 'sno',
+                        },
+                        {
+                            Header: 'Party Name',
+                            Footer: 'Total',
+                            accessor: 'partyName',
+                        },
+                    ],
+                    ...this.props.gas.map(gasItem=>{
+                        return({
+                            Header:`${gasItem.gas}`,
+                            accessor: `${gasItem.gas}`,
+                            Footer: info => {
+                                // Only calculate total visits if rows change
+                                    var total = info.rows.reduce((sum, row) => row.values[gasItem.gas] + sum, 0)
+                                return <><strong>{total}</strong></>
+                            },
+                        })
+                    }),
+                    {
+                        Header: 'Total',
+                        accessor: 'total',
+                        Footer: info => {
+                            // Only calculate total visits if rows change
+                                var total = info.rows.reduce((sum, row) => row.values['total'] + sum, 0)
+                            return <><strong>{total}</strong></>
+                        },
+                    },
+                ],
+              }
+            ]
         return(
             this.state.loading? 
             <Spinner animation="border" className="spinner">
@@ -159,9 +191,7 @@ class AllPartyRegister extends React.Component{
                 <div className="d-lg-none"><NavbarLg/></div>
                 <Container fluid>
                     <Row>
-                        
                             <Sidebar />
-                        
                         <Col
                             lg={10}
                             id="page-content-wrapper"
@@ -183,40 +213,58 @@ class AllPartyRegister extends React.Component{
                                     Hide Low Balances
                                 </label>
                             </div>
-                            <table className="table-hover allpartyTable">
-                                <thead >
-                                    <tr>
-                                        <th colSpan={3 + (this.props.gas.length*3)}>Party Name</th>
-                                    </tr>
-                                    <tr>
-                                        <th style={{width:"10%"}}>Sr. No</th>
-                                        <th>Party Name</th>
-                                        {this.props.gas.map(item =>{
-                                            return(<th colSpan={1}>{item.gas}</th>)
-                                        })}
-                                        <th>Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        this.state.hideLowBalances
-                                        ?
-                                            this.state.lowBalanceHidden.length > 0?this.state.lowBalanceHidden:[]
-                                        :
-                                            this.state.show.length > 0?this.state.show:[]}
-                                    {
-                                        this.state.show.length > 0? 
-                                        <tr>
-                                            <td colSpan={2}><strong>Total</strong></td>
-                                            {this.state.gasWiseTotal.map(gasItem =>{
-                                                return(<td><strong>{gasItem.quantity}</strong></td>)
-                                            })}
-                                            <td><strong>{_.sumBy(this.state.gasWiseTotal, 'quantity') }</strong></td>
-                                        </tr>
+
+                            
+                            <div className='table-container'>
+                                {
+                                    this.state.hideLowBalances
+                                    ?
+                                        this.state.lowBalanceHidden.length > 0?
+                                            <Table 
+                                                columns={columns} 
+                                                data={this.state.lowBalanceHidden} 
+                                                footer = {this.state.footer} 
+                                                click={this.handleShow.bind(this)}
+                                                getCellProps={cellInfo => ({
+                                                    style: {
+                                                    fontWeight: cellInfo.value !== 0? 'bold' : 'normal',
+                                                    },
+                                                })}
+                                                getRowProps={info => ({
+                                                    onClick: () => this.handleShow(info.values.partyName),
+                                                })}
+                                                getColumnProps={column => ({
+                                                    style: {
+                                                        textAlign: column.Header==='Party Name'? 'left': 'center',
+                                                    }
+                                                })}
+                                                />
                                         :[]
-                                    }
-                                </tbody>
-                            </table>
+                                    :
+                                        this.state.data.length > 0?
+                                            <Table 
+                                                columns={columns} 
+                                                data={this.state.data} 
+                                                footer = {this.state.footer} 
+                                                click={this.handleShow.bind(this)}
+                                                getCellProps={cellInfo => ({
+                                                    style: {
+                                                    fontWeight: cellInfo.value !== 0? 'bold' : 'normal',
+                                                    },
+                                                })}
+                                                getRowProps={info => ({
+                                                    onClick: () => this.handleShow(info.values.partyName),
+                                                })}
+                                                getColumnProps={column => ({
+                                                    style: {
+                                                        textAlign: column.Header==='Party Name'? 'left': 'center',
+                                                    }
+                                                })}
+                                            />
+                                        :[]
+                                }                            
+                            </div>
+                            
                             <Modal
                                 size="lg"
                                 show={this.state.modalShow}
@@ -229,7 +277,7 @@ class AllPartyRegister extends React.Component{
                                 </Modal.Title>
                                 </Modal.Header>
                                 <Modal.Body>
-                                    <PartyRegister gas={this.props.gas} partyNames={this.props.partyNames} pn={this.state.name} />
+                                    <PartyRegister gas={this.props.gas} partyNames={this.props.partyNames} pn={this.state.name} click={this.handleShow} />
                                 </Modal.Body>
                             </Modal>
                         </Col>

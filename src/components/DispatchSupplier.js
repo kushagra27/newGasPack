@@ -158,7 +158,7 @@ class DispatchSupplier extends React.Component {
   handleRemove = (challanNumber) => {
     var data = this.state.data;
     var total = this.state.total;
-    var locationWiseEntry = [];
+    var locationWiseEntry = this.state.locationWiseEntry;
     var arr = [];
     console.log(locationWiseEntry);
     data.map((item) => {
@@ -169,9 +169,7 @@ class DispatchSupplier extends React.Component {
               totItem.quantity -= parseInt(cylItem.quantity);
             }
           });
-          locationWiseEntry = this.state.locationWiseEntry[
-            item.soldFrom
-          ].filter((locItem) => locItem.challanNumber !== challanNumber);
+          locationWiseEntry[item.soldFrom] = this.state.locationWiseEntry[item.soldFrom].filter((locItem) => locItem.challanNumber !== challanNumber);
         });
       } else {
         arr.push(item);
